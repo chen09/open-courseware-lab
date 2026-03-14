@@ -1,0 +1,1025 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Jiro Taro Motion Demo</title>
+  <style>
+    :root {
+      --bg: #f7f8fb;
+      --ink: #1f2430;
+      --line: #2d3748;
+      --accent-a: #2563eb;
+      --accent-b: #ef4444;
+      --ok: #16a34a;
+      --rest: #f59e0b;
+      --card: #ffffff;
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Segoe UI", Tahoma, Arial, sans-serif;
+      color: var(--ink);
+      background: linear-gradient(180deg, #f8fafc 0%, #eef2ff 100%);
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      padding: 24px;
+    }
+
+    .app {
+      width: min(980px, 100%);
+      background: var(--card);
+      border: 1px solid #e5e7eb;
+      border-radius: 16px;
+      box-shadow: 0 20px 40px rgba(15, 23, 42, 0.08);
+      overflow: hidden;
+    }
+
+    .header {
+      padding: 18px 20px 10px;
+      border-bottom: 1px solid #eceff4;
+      background: #fcfdff;
+    }
+
+    .header h1 {
+      margin: 0 0 8px;
+      font-size: 20px;
+    }
+
+    .header p {
+      margin: 0;
+      line-height: 1.5;
+      color: #4b5563;
+      font-size: 14px;
+    }
+
+    .lang-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    .lang-buttons {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .lang-btn {
+      border: 1px solid #d1d5db;
+      background: #fff;
+      color: #111827;
+      border-radius: 8px;
+      padding: 6px 10px;
+      font-size: 13px;
+      cursor: pointer;
+    }
+
+    .lang-btn.active {
+      background: #111827;
+      color: #fff;
+      border-color: #111827;
+    }
+
+    .lang-btn.auto-on {
+      background: #0f766e;
+      color: #fff;
+      border-color: #0f766e;
+    }
+
+    .desc-stack {
+      display: grid;
+      gap: 6px;
+      margin-top: 8px;
+    }
+
+    .desc-ja { color: #1f2937; }
+    .desc-zh { color: #334155; }
+    .desc-en { color: #1e3a8a; }
+
+    .hidden { display: none !important; }
+
+    .tabs {
+      display: flex;
+      gap: 8px;
+      padding: 12px 20px 0;
+      flex-wrap: wrap;
+    }
+
+    .tab-btn {
+      border: 1px solid #d1d5db;
+      background: #fff;
+      color: #111827;
+      border-radius: 10px;
+      padding: 7px 12px;
+      font-size: 14px;
+      cursor: pointer;
+    }
+
+    .tab-btn.active {
+      background: #111827;
+      border-color: #111827;
+      color: #fff;
+    }
+
+    .tab-panel {
+      padding-top: 8px;
+    }
+
+    .scene-wrap {
+      padding: 18px 20px 8px;
+    }
+
+    svg {
+      width: 100%;
+      height: auto;
+      display: block;
+      border-radius: 12px;
+      background: var(--bg);
+      border: 1px solid #e5e7eb;
+    }
+
+    .panel {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+      padding: 12px 20px 20px;
+    }
+
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+    }
+
+    button {
+      border: 0;
+      border-radius: 10px;
+      padding: 8px 12px;
+      font-size: 14px;
+      cursor: pointer;
+      background: #e5e7eb;
+      color: #111827;
+    }
+
+    button.primary { background: #111827; color: #fff; }
+
+    .slider-row {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 10px;
+      align-items: center;
+    }
+
+    input[type="range"] {
+      width: 100%;
+      accent-color: #111827;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(240px, 1fr));
+      gap: 10px;
+    }
+
+    .card {
+      border: 1px solid #e5e7eb;
+      border-radius: 12px;
+      background: #fff;
+      padding: 10px 12px;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .card b { display: inline-block; min-width: 100px; }
+
+    .badge {
+      display: inline-block;
+      border-radius: 999px;
+      padding: 2px 10px;
+      font-size: 12px;
+      font-weight: 600;
+      color: #fff;
+      vertical-align: middle;
+      margin-left: 6px;
+    }
+
+    .b-taro { background: var(--accent-a); }
+    .b-jiro { background: var(--accent-b); }
+    .b-rest { background: var(--rest); }
+    .b-ok { background: var(--ok); }
+
+    .answer {
+      font-size: 15px;
+      font-weight: 700;
+    }
+
+    .foot {
+      color: #6b7280;
+      font-size: 12px;
+      padding: 0 20px 18px;
+    }
+
+    .vocab {
+      padding: 0 20px 10px;
+      display: grid;
+      grid-template-columns: repeat(5, minmax(120px, 1fr));
+      gap: 8px;
+    }
+
+    .vocab .chip {
+      border: 1px solid #dbeafe;
+      background: #eff6ff;
+      border-radius: 999px;
+      padding: 6px 10px;
+      font-size: 12px;
+      text-align: center;
+      color: #1e3a8a;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    @media (max-width: 800px) {
+      .vocab {
+        grid-template-columns: repeat(2, minmax(120px, 1fr));
+      }
+    }
+
+    .problem-wrap,
+    .solution-wrap {
+      padding: 12px 20px 18px;
+      display: grid;
+      gap: 12px;
+    }
+
+    .problem-card,
+    .solution-card {
+      border: 1px solid #e5e7eb;
+      border-radius: 12px;
+      background: #fff;
+      padding: 12px;
+      line-height: 1.6;
+    }
+
+    .problem-card h3,
+    .solution-card h3 {
+      margin: 0 0 8px;
+      font-size: 16px;
+    }
+
+    .problem-photo {
+      width: 100%;
+      max-width: 760px;
+      border-radius: 10px;
+      border: 1px solid #d1d5db;
+      display: block;
+    }
+
+    .txt-ja, .txt-zh, .txt-en {
+      margin: 6px 0;
+    }
+
+    .formula-box {
+      border: 1px dashed #94a3b8;
+      background: #f8fafc;
+      border-radius: 10px;
+      padding: 10px;
+      font-family: "Consolas", "Menlo", monospace;
+      font-size: 13px;
+      white-space: pre-wrap;
+    }
+
+    .teacher-tools {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin: 8px 0 12px;
+    }
+
+    .teacher-tools button {
+      border: 1px solid #d1d5db;
+      background: #fff;
+      color: #111827;
+      border-radius: 8px;
+      padding: 6px 10px;
+      font-size: 13px;
+      cursor: pointer;
+    }
+
+    .teacher-tools button.on {
+      background: #0f766e;
+      border-color: #0f766e;
+      color: #fff;
+    }
+
+    .step-block {
+      border-top: 1px dashed #d1d5db;
+      padding-top: 8px;
+      margin-top: 8px;
+    }
+
+    .step-q {
+      font-weight: 600;
+      color: #374151;
+      margin: 6px 0;
+    }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <section class="header">
+      <div class="lang-row">
+        <h1 id="titleText" style="margin:0;">歩き方アニメ（やさしい理解）</h1>
+        <div class="lang-buttons">
+          <button class="lang-btn" id="langJaBtn">日本語</button>
+          <button class="lang-btn" id="langZhBtn">中文</button>
+          <button class="lang-btn" id="langEnBtn">English Focus</button>
+          <button class="lang-btn" id="autoLangBtn">自动轮播 OFF</button>
+        </div>
+      </div>
+      <div class="desc-stack">
+        <p id="descJa" class="desc-ja"></p>
+        <p id="descZh" class="desc-zh"></p>
+        <p id="descEn" class="desc-en hidden"></p>
+      </div>
+    </section>
+
+    <section class="tabs">
+      <button id="tabProblemBtn" class="tab-btn">原题</button>
+      <button id="tabSolutionBtn" class="tab-btn">解法</button>
+      <button id="tabAnimationBtn" class="tab-btn active">动画</button>
+    </section>
+
+    <section id="tabProblem" class="tab-panel hidden">
+      <div class="problem-wrap">
+        <div class="problem-card">
+          <h3>原题（整理版）</h3>
+          <img class="problem-photo" src="./assets/problem-001.png" alt="original problem photo" />
+        </div>
+        <div class="problem-card">
+          <h3>题目文字 / 問題文 / Problem</h3>
+          <p class="txt-ja">図のAから太郎が、Bから次郎がCに向けて同時に出発しました。次郎は時速3kmで歩き、途中で14分休み、その後時速5kmで歩きました。太郎は時速4kmで休まず歩き、ある地点で次郎を追いこしましたが、2人は同時にCに着きました。次郎は出発してから休むまでに何時間何分歩きましたか。</p>
+          <p class="txt-zh">太郎从A出发，次郎从B出发，两人同时向C前进。次郎先以3km/h行走，途中休息14分钟，之后以5km/h行走。太郎以4km/h不停地走，在途中某处追上次郎，但两人同时到达C。问：次郎从出发到休息前，走了几小时几分钟？</p>
+          <p class="txt-en hidden">Taro starts from A and Jiro starts from B at the same time, both heading to C. Jiro walks at 3 km/h, rests for 14 minutes, then walks at 5 km/h. Taro walks at 4 km/h without resting, catches up with Jiro, and both arrive at C at the same time. How long did Jiro walk before resting?</p>
+        </div>
+        <div class="problem-card">
+          <h3>已知条件 / Given</h3>
+          <p class="txt-ja">A-B = 6km、B-C = 28km。太郎: 4km/h（休みなし）。次郎: 3km/h -> 14分休み -> 5km/h。出発時刻と到着時刻は同じ。</p>
+          <p class="txt-zh">A-B=6km，B-C=28km。太郎速度4km/h（不休息）。次郎速度3km/h -> 休息14分钟 -> 5km/h。两人同时出发且同时到达。</p>
+          <p class="txt-en hidden">A-B = 6 km, B-C = 28 km. Taro: 4 km/h without rest. Jiro: 3 km/h -> 14-minute rest -> 5 km/h. Same start time and same arrival time.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="tabSolution" class="tab-panel hidden">
+      <div class="solution-wrap">
+        <div class="solution-card">
+          <h3>解法（小学生向け）</h3>
+          <div class="teacher-tools">
+            <button id="teacherModeBtn">老师模式 OFF</button>
+            <button id="nextStepBtn" class="hidden">显示下一步</button>
+          </div>
+
+          <div class="step-block">
+            <p class="step-q txt-ja">Q1: まず太郎の合計時間は？</p>
+            <p class="step-q txt-zh">Q1：先算太郎总时间是多少？</p>
+            <p class="step-q txt-en hidden">Q1: What is Taro's total time?</p>
+            <div class="step-answer" data-step="1">
+              <p class="txt-ja">1) 太郎の時間を先に出す: 34km ÷ 4km/h = 8時間30分。</p>
+              <p class="txt-zh">1) 先算太郎用时：34km ÷ 4km/h = 8小时30分。</p>
+              <p class="txt-en hidden">1) Find Taro's time first: 34 km ÷ 4 km/h = 8 h 30 min.</p>
+            </div>
+          </div>
+
+          <div class="step-block">
+            <p class="step-q txt-ja">Q2: 次郎の「歩いた合計時間」は？</p>
+            <p class="step-q txt-zh">Q2：次郎“实际步行时间”是多少？</p>
+            <p class="step-q txt-en hidden">Q2: What is Jiro's total walking time?</p>
+            <div class="step-answer" data-step="2">
+              <p class="txt-ja">2) 同時到着だから次郎の合計時間も8時間30分。休み14分を引くと歩いた合計は8時間16分。</p>
+              <p class="txt-zh">2) 两人同时到达，所以次郎总时长也是8小时30分。减去休息14分钟，步行总时长是8小时16分。</p>
+              <p class="txt-en hidden">2) They arrive together, so Jiro also takes 8 h 30 min total. Minus 14 min rest gives 8 h 16 min walking time.</p>
+            </div>
+          </div>
+
+          <div class="step-block">
+            <p class="step-q txt-ja">Q3: もし全部を時速3kmで歩いたら何km？</p>
+            <p class="step-q txt-zh">Q3：如果全程按3km/h走，能走多少km？</p>
+            <p class="step-q txt-en hidden">Q3: If all walking were at 3 km/h, how far would Jiro go?</p>
+            <div class="step-answer" data-step="3">
+              <p class="txt-ja">3) もし全部を時速3kmで歩くと、3 × 8時間16分 = 24.8km。実際は28kmなので差は3.2km。</p>
+              <p class="txt-zh">3) 如果全程按3km/h走，会走24.8km；实际是28km，多出3.2km。</p>
+              <p class="txt-en hidden">3) If Jiro walked all his walking time at 3 km/h, he'd go 24.8 km. Real distance is 28 km, so extra distance is 3.2 km.</p>
+            </div>
+          </div>
+
+          <div class="step-block">
+            <p class="step-q txt-ja">Q4: 後半の速さアップで1時間に何km多く進む？</p>
+            <p class="step-q txt-zh">Q4：后半提速后，每小时多走多少km？</p>
+            <p class="step-q txt-en hidden">Q4: In the faster phase, how many extra km per hour does Jiro gain?</p>
+            <div class="step-answer" data-step="4">
+              <p class="txt-ja">4) 後半は毎時2km多く進む（5-3）。だから後半時間 = 3.2 ÷ 2 = 1.6時間 = 1時間36分。</p>
+              <p class="txt-zh">4) 后半每小时多走2km（5-3），所以后半时间 = 3.2 ÷ 2 = 1.6小时 = 1小时36分。</p>
+              <p class="txt-en hidden">4) In the faster phase, Jiro gains 2 km per hour (5-3), so fast-phase time = 3.2 ÷ 2 = 1.6 h = 1 h 36 min.</p>
+            </div>
+          </div>
+
+          <div class="step-block">
+            <p class="step-q txt-ja">Q5: 休む前の時間は？</p>
+            <p class="step-q txt-zh">Q5：休息前时间是多少？</p>
+            <p class="step-q txt-en hidden">Q5: What is the time before resting?</p>
+            <div class="step-answer" data-step="5">
+              <p class="txt-ja">5) 休む前の時間 = 8時間16分 - 1時間36分 = 6時間40分。</p>
+              <p class="txt-zh">5) 休息前时间 = 8小时16分 - 1小时36分 = 6小时40分。</p>
+              <p class="txt-en hidden">5) Time before rest = 8 h 16 min - 1 h 36 min = 6 h 40 min.</p>
+            </div>
+          </div>
+        </div>
+        <div class="solution-card">
+          <h3>方程式版（对照）</h3>
+          <div class="step-answer" data-step="6">
+            <div class="formula-box">x + 14/60 + (28 - 3x)/5 = 8.5
+x = 20/3 hours = 6 h 40 min</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="tabAnimation" class="tab-panel">
+      <section class="scene-wrap">
+      <svg viewBox="0 0 920 280" aria-label="motion scene">
+        <line x1="70" y1="140" x2="850" y2="140" stroke="#9ca3af" stroke-width="6" />
+        <line id="segmentAB" x1="70" y1="140" x2="207.65" y2="140" stroke="#374151" stroke-width="8" />
+        <line id="segmentBC" x1="207.65" y1="140" x2="850" y2="140" stroke="#111827" stroke-width="8" />
+
+        <line id="restMarkStart" x1="0" y1="95" x2="0" y2="185" stroke="#f59e0b" stroke-width="2" stroke-dasharray="6 4" />
+        <line id="restMarkEnd" x1="0" y1="95" x2="0" y2="185" stroke="#f59e0b" stroke-width="2" stroke-dasharray="6 4" />
+        <line id="catchMark" x1="0" y1="95" x2="0" y2="185" stroke="#16a34a" stroke-width="2" stroke-dasharray="4 4" />
+
+        <circle cx="70" cy="140" r="10" fill="#111827" />
+        <circle cx="207.65" cy="140" r="10" fill="#111827" />
+        <circle cx="850" cy="140" r="10" fill="#111827" />
+
+        <text x="64" y="172" font-size="16" fill="#111827">A</text>
+        <text x="201" y="172" font-size="16" fill="#111827">B</text>
+        <text x="844" y="172" font-size="16" fill="#111827">C</text>
+
+        <text x="117" y="120" font-size="14" fill="#374151">6 km</text>
+        <text x="495" y="120" font-size="14" fill="#111827">28 km</text>
+
+        <circle id="taroDot" cx="70" cy="122" r="9" fill="#2563eb" />
+        <text id="taroLabel" x="70" y="104" text-anchor="middle" font-size="13" fill="#2563eb">太郎</text>
+
+        <circle id="jiroDot" cx="207.65" cy="158" r="9" fill="#ef4444" />
+        <text id="jiroLabel" x="207.65" y="196" text-anchor="middle" font-size="13" fill="#ef4444">次郎</text>
+
+        <text x="18" y="26" font-size="13" fill="#4b5563"><tspan id="timeLabel">時刻</tspan>: <tspan id="tText">0:00</tspan></text>
+        <text x="18" y="45" font-size="13" fill="#4b5563"><tspan id="stateLabel">次郎の状態</tspan>: <tspan id="stateText">時速3kmで歩行</tspan></text>
+        <text x="18" y="64" font-size="13" fill="#4b5563"><tspan id="jDistLabel">Bからの距離</tspan>: <tspan id="jDistText">0.00 km</tspan></text>
+      </svg>
+      </section>
+
+      <section class="vocab">
+      <div class="chip" id="v1">speed 速度 速さ</div>
+      <div class="chip" id="v2">distance 距离 距離</div>
+      <div class="chip" id="v3">rest 休息 休み</div>
+      <div class="chip" id="v4">same time 同时 同時</div>
+      <div class="chip" id="v5">catch up 追上 追いこす</div>
+      </section>
+
+      <section class="panel">
+      <div class="controls">
+        <button id="playBtn" class="primary">再生</button>
+        <button id="pauseBtn">一時停止</button>
+        <button id="resetBtn">最初へ</button>
+        <button id="toRestBtn">休憩開始へ</button>
+        <button id="toCatchBtn">追いこし地点へ</button>
+        <button id="toEndBtn">ゴールへ</button>
+      </div>
+
+      <div class="slider-row">
+        <input id="timeSlider" type="range" min="0" max="510" value="0" step="1" />
+        <div id="clock" style="font-weight:700;">0:00 / 8:30</div>
+      </div>
+
+      <div class="stats">
+        <div class="card">
+          <div><b id="taroTitle">太郎</b><span class="badge b-taro">4 km/h</span></div>
+          <div><span id="taroDistLabel">Aからの距離</span>: <span id="taroDist">0.00 km</span></div>
+          <div id="taroTotalLabel">Cまで合計: 34 km</div>
+        </div>
+
+        <div class="card">
+          <div><b id="jiroTitle">次郎</b><span class="badge b-jiro">3 -> 休み -> 5</span></div>
+          <div><span id="jiroDistLabel">Bからの距離</span>: <span id="jiroDist">0.00 km</span></div>
+          <div id="restInfo">休憩開始 <span id="restAt">6:40</span>（14分）</div>
+        </div>
+
+        <div class="card">
+          <div><b id="catchTitle">追いこし時刻</b><span class="badge b-ok" id="catchBadge">太郎が次郎を追いこす</span></div>
+          <div id="catchLine1"><span id="catchAt">6:00</span> に同じ場所にいる</div>
+          <div id="catchLine2">その後、次郎は休んでから速く歩く</div>
+        </div>
+
+        <div class="card">
+          <div class="answer" id="answerLine">
+            答え: 次郎は休む前に <span style="color:#dc2626;">6時間40分</span> 歩いた。
+          </div>
+        </div>
+      </div>
+      </section>
+
+      <div class="foot" id="footText">ヒント: スライダーをゆっくり動かして、状態の変化を見てください。</div>
+    </section>
+  </main>
+
+  <script>
+    (function () {
+      "use strict";
+
+      // Problem constants
+      const TOTAL_MIN = 510; // 8h30m
+      const AB = 6;
+      const BC = 28;
+      const AC = AB + BC; // 34
+      const TARO_SPEED = 4;
+      const JIRO_SPEED1 = 3;
+      const JIRO_SPEED2 = 5;
+      const REST_MIN = 14;
+      const REST_START_H = 20 / 3; // 6h40m
+      const REST_START_MIN = REST_START_H * 60; // 400
+      const REST_END_MIN = REST_START_MIN + REST_MIN; // 414
+      const CATCH_MIN = 360; // 6h00m
+
+      // Scene coordinates
+      const XA = 70;
+      const XC = 850;
+      const W = XC - XA;
+
+      const mapDistFromAtoX = (d) => XA + (Math.max(0, Math.min(AC, d)) / AC) * W;
+
+      const pad2 = (n) => String(n).padStart(2, "0");
+      const minToClock = (m) => {
+        const hh = Math.floor(m / 60);
+        const mm = Math.round(m % 60);
+        return `${hh}:${pad2(mm)}`;
+      };
+
+      function jiroDistFromB(min) {
+        if (min <= REST_START_MIN) {
+          return JIRO_SPEED1 * (min / 60);
+        }
+        if (min <= REST_END_MIN) {
+          return JIRO_SPEED1 * (REST_START_MIN / 60);
+        }
+        const afterRestH = (min - REST_END_MIN) / 60;
+        return JIRO_SPEED1 * (REST_START_MIN / 60) + JIRO_SPEED2 * afterRestH;
+      }
+
+      function taroDistFromA(min) {
+        return TARO_SPEED * (min / 60);
+      }
+
+      const el = {
+        taroDot: document.getElementById("taroDot"),
+        jiroDot: document.getElementById("jiroDot"),
+        taroLabel: document.getElementById("taroLabel"),
+        jiroLabel: document.getElementById("jiroLabel"),
+        tText: document.getElementById("tText"),
+        stateText: document.getElementById("stateText"),
+        jDistText: document.getElementById("jDistText"),
+        taroDist: document.getElementById("taroDist"),
+        jiroDist: document.getElementById("jiroDist"),
+        slider: document.getElementById("timeSlider"),
+        clock: document.getElementById("clock"),
+        playBtn: document.getElementById("playBtn"),
+        pauseBtn: document.getElementById("pauseBtn"),
+        resetBtn: document.getElementById("resetBtn"),
+        toRestBtn: document.getElementById("toRestBtn"),
+        toCatchBtn: document.getElementById("toCatchBtn"),
+        toEndBtn: document.getElementById("toEndBtn"),
+        restMarkStart: document.getElementById("restMarkStart"),
+        restMarkEnd: document.getElementById("restMarkEnd"),
+        catchMark: document.getElementById("catchMark")
+      };
+
+      const i18n = {
+        ja: {
+          title: "歩き方アニメ（やさしい理解）",
+          descJa: "A-B = 6km、B-C = 28km。太郎はAから時速4kmで休まず歩く。次郎はBから時速3kmで歩き、14分休んだ後、時速5kmで歩く。2人は同時にCに着く。",
+          descZh: "A-B=6km，B-C=28km。太郎从A以4km/h不停地走。次郎从B先以3km/h走，休息14分钟后以5km/h走。两人同时到达C。",
+          descEn: "A-B is 6km, B-C is 28km. Taro walks from A at 4km/h without rest. Jiro walks from B at 3km/h, rests 14 minutes, then walks at 5km/h. They reach C at the same time.",
+          timeLabel: "時刻",
+          stateLabel: "次郎の状態",
+          jDistLabel: "Bからの距離",
+          play: "再生",
+          pause: "一時停止",
+          reset: "最初へ",
+          toRest: "休憩開始へ",
+          toCatch: "追いこし地点へ",
+          toEnd: "ゴールへ",
+          taroTitle: "太郎",
+          taroDistLabel: "Aからの距離",
+          taroTotalLabel: "Cまで合計: 34 km",
+          jiroTitle: "次郎",
+          jiroDistLabel: "Bからの距離",
+          restInfo: "休憩開始 {time}（14分）",
+          catchTitle: "追いこし時刻",
+          catchBadge: "太郎が次郎を追いこす",
+          catchLine1: "{time} に同じ場所にいる",
+          catchLine2: "その後、次郎は休んでから速く歩く",
+          answerLine: "答え: 次郎は休む前に <span style=\"color:#dc2626;\">6時間40分</span> 歩いた。",
+          footText: "ヒント: スライダーをゆっくり動かして、状態の変化を見てください。",
+          stateWalk3: "時速3kmで歩行",
+          stateRest: "休憩中（14分）",
+          stateWalk5: "時速5kmで歩行",
+          stateArrived: "Cに到着",
+          stateCatch: "追いこしの瞬間",
+          vocab: ["speed 速度 速さ", "distance 距离 距離", "rest 休息 休み", "same time 同时 同時", "catch up 追上 追いこす"],
+          taroName: "太郎",
+          jiroName: "次郎",
+          autoLangStart: "自動切替 OFF",
+          autoLangStop: "自動切替 ON",
+          tabProblem: "原題",
+          tabSolution: "解き方",
+          tabAnimation: "アニメ",
+          teacherModeOff: "先生モード OFF",
+          teacherModeOn: "先生モード ON",
+          nextStep: "次のステップを表示",
+          allStepsShown: "すべて表示済み"
+        },
+        zh: {
+          title: "行走动画（易懂版）",
+          descJa: "A-B = 6km、B-C = 28km。太郎はAから時速4kmで休まず歩く。次郎はBから時速3kmで歩き、14分休んだ後、時速5kmで歩く。2人は同時にCに着く。",
+          descZh: "A-B=6km，B-C=28km。太郎从A以4km/h不停地走。次郎从B先以3km/h走，休息14分钟后以5km/h走。两人同时到达C。",
+          descEn: "A-B is 6km, B-C is 28km. Taro walks from A at 4km/h without rest. Jiro walks from B at 3km/h, rests 14 minutes, then walks at 5km/h. They reach C at the same time.",
+          timeLabel: "时间",
+          stateLabel: "次郎状态",
+          jDistLabel: "距B距离",
+          play: "播放",
+          pause: "暂停",
+          reset: "重置",
+          toRest: "跳到休息",
+          toCatch: "跳到追上",
+          toEnd: "跳到终点",
+          taroTitle: "太郎",
+          taroDistLabel: "距A距离",
+          taroTotalLabel: "到C总路程: 34 km",
+          jiroTitle: "次郎",
+          jiroDistLabel: "距B距离",
+          restInfo: "休息开始于 {time}（14分钟）",
+          catchTitle: "追上时刻",
+          catchBadge: "太郎追上次郎",
+          catchLine1: "{time} 在同一位置",
+          catchLine2: "之后次郎休息，再以更快速度前进",
+          answerLine: "答案: 次郎在休息前走了 <span style=\"color:#dc2626;\">6小时40分钟</span>。",
+          footText: "提示: 慢慢拖动滑块，观察状态变化。",
+          stateWalk3: "以3km/h行走",
+          stateRest: "休息中（14分钟）",
+          stateWalk5: "以5km/h行走",
+          stateArrived: "到达C点",
+          stateCatch: "追上瞬间",
+          vocab: ["speed 速度 速さ", "distance 距离 距離", "rest 休息 休み", "same time 同时 同時", "catch up 追上 追いこす"],
+          taroName: "太郎",
+          jiroName: "次郎",
+          autoLangStart: "自动轮播 OFF",
+          autoLangStop: "自动轮播 ON",
+          tabProblem: "原题",
+          tabSolution: "解法",
+          tabAnimation: "动画",
+          teacherModeOff: "老师模式 OFF",
+          teacherModeOn: "老师模式 ON",
+          nextStep: "显示下一步",
+          allStepsShown: "已全部显示"
+        },
+        en: {
+          title: "Walking Animation (English Focus)",
+          descJa: "A-B = 6km、B-C = 28km。太郎はAから時速4kmで休まず歩く。次郎はBから時速3kmで歩き、14分休んだ後、時速5kmで歩く。2人は同時にCに着く。",
+          descZh: "A-B=6km，B-C=28km。太郎从A以4km/h不停地走。次郎从B先以3km/h走，休息14分钟后以5km/h走。两人同时到达C。",
+          descEn: "A-B is 6km and B-C is 28km. Taro starts at A and walks at 4km/h with no rest. Jiro starts at B, walks at 3km/h, rests for 14 minutes, then walks at 5km/h. They arrive at C at the same time.",
+          timeLabel: "Time",
+          stateLabel: "Jiro state",
+          jDistLabel: "Distance from B",
+          play: "Play",
+          pause: "Pause",
+          reset: "Reset",
+          toRest: "Jump to Rest",
+          toCatch: "Jump to Catch-up",
+          toEnd: "Jump to Goal",
+          taroTitle: "Taro",
+          taroDistLabel: "Distance from A",
+          taroTotalLabel: "Total to C: 34 km",
+          jiroTitle: "Jiro",
+          jiroDistLabel: "Distance from B",
+          restInfo: "Rest starts at {time} (14 min)",
+          catchTitle: "Catch-up time",
+          catchBadge: "Taro passes Jiro",
+          catchLine1: "At {time}, they are at the same point",
+          catchLine2: "Then Jiro rests and later walks faster",
+          answerLine: "Answer: Jiro walked <span style=\"color:#dc2626;\">6 hours 40 minutes</span> before resting.",
+          footText: "Tip: drag the slider slowly and watch each phase.",
+          stateWalk3: "walking at 3 km/h",
+          stateRest: "resting (14 min)",
+          stateWalk5: "walking at 5 km/h",
+          stateArrived: "arrived at C",
+          stateCatch: "catch-up moment",
+          vocab: ["speed 速度 速さ", "distance 距离 距離", "rest 休息 休み", "same time 同时 同時", "catch up 追上 追いこす"],
+          taroName: "Taro",
+          jiroName: "Jiro",
+          autoLangStart: "Auto Rotate OFF",
+          autoLangStop: "Auto Rotate ON",
+          tabProblem: "Problem",
+          tabSolution: "Solution",
+          tabAnimation: "Animation",
+          teacherModeOff: "Teacher Mode OFF",
+          teacherModeOn: "Teacher Mode ON",
+          nextStep: "Show Next Step",
+          allStepsShown: "All Steps Shown"
+        }
+      };
+
+      const langButtons = {
+        ja: document.getElementById("langJaBtn"),
+        zh: document.getElementById("langZhBtn"),
+        en: document.getElementById("langEnBtn")
+      };
+      const tabButtons = {
+        problem: document.getElementById("tabProblemBtn"),
+        solution: document.getElementById("tabSolutionBtn"),
+        animation: document.getElementById("tabAnimationBtn")
+      };
+      const tabPanels = {
+        problem: document.getElementById("tabProblem"),
+        solution: document.getElementById("tabSolution"),
+        animation: document.getElementById("tabAnimation")
+      };
+      const autoLangBtn = document.getElementById("autoLangBtn");
+      const teacherModeBtn = document.getElementById("teacherModeBtn");
+      const nextStepBtn = document.getElementById("nextStepBtn");
+      const stepAnswers = Array.from(document.querySelectorAll(".step-answer"));
+      const langEls = {
+        titleText: document.getElementById("titleText"),
+        descJa: document.getElementById("descJa"),
+        descZh: document.getElementById("descZh"),
+        descEn: document.getElementById("descEn"),
+        timeLabel: document.getElementById("timeLabel"),
+        stateLabel: document.getElementById("stateLabel"),
+        jDistLabel: document.getElementById("jDistLabel"),
+        taroTitle: document.getElementById("taroTitle"),
+        taroDistLabel: document.getElementById("taroDistLabel"),
+        taroTotalLabel: document.getElementById("taroTotalLabel"),
+        jiroTitle: document.getElementById("jiroTitle"),
+        jiroDistLabel: document.getElementById("jiroDistLabel"),
+        restInfo: document.getElementById("restInfo"),
+        catchTitle: document.getElementById("catchTitle"),
+        catchBadge: document.getElementById("catchBadge"),
+        catchLine1: document.getElementById("catchLine1"),
+        catchLine2: document.getElementById("catchLine2"),
+        answerLine: document.getElementById("answerLine"),
+        footText: document.getElementById("footText"),
+        v1: document.getElementById("v1"),
+        v2: document.getElementById("v2"),
+        v3: document.getElementById("v3"),
+        v4: document.getElementById("v4"),
+        v5: document.getElementById("v5"),
+        taroLabel: document.getElementById("taroLabel"),
+        jiroLabel: document.getElementById("jiroLabel")
+      };
+      let lang = "ja";
+      let activeTab = "animation";
+      let autoLangTimer = null;
+      let teacherMode = false;
+      let revealedSteps = 0;
+
+      // Place static markers
+      const restStartX = mapDistFromAtoX(AB + JIRO_SPEED1 * (REST_START_MIN / 60)); // A base
+      const restEndX = restStartX; // rest means no movement
+      const catchX = mapDistFromAtoX(TARO_SPEED * (CATCH_MIN / 60));
+      el.restMarkStart.setAttribute("x1", restStartX);
+      el.restMarkStart.setAttribute("x2", restStartX);
+      el.restMarkEnd.setAttribute("x1", restEndX);
+      el.restMarkEnd.setAttribute("x2", restEndX);
+      el.catchMark.setAttribute("x1", catchX);
+      el.catchMark.setAttribute("x2", catchX);
+
+      let currentMin = 0;
+      let timer = null;
+
+      function render(min) {
+        const tx = i18n[lang];
+        const tDist = Math.min(AC, taroDistFromA(min));
+        const jDistB = Math.min(BC, jiroDistFromB(min));
+        const jDistA = AB + jDistB;
+        const xt = mapDistFromAtoX(tDist);
+        const xj = mapDistFromAtoX(jDistA);
+
+        el.taroDot.setAttribute("cx", xt);
+        el.taroLabel.setAttribute("x", xt);
+        el.jiroDot.setAttribute("cx", xj);
+        el.jiroLabel.setAttribute("x", xj);
+
+        el.tText.textContent = minToClock(min);
+        el.clock.textContent = `${minToClock(min)} / 8:30`;
+        el.taroDist.textContent = `${tDist.toFixed(2)} km`;
+        el.jiroDist.textContent = `${jDistB.toFixed(2)} km`;
+        el.jDistText.textContent = `${jDistB.toFixed(2)} km`;
+
+        let state = tx.stateWalk3;
+        if (min > REST_START_MIN && min <= REST_END_MIN) state = tx.stateRest;
+        if (min > REST_END_MIN) state = tx.stateWalk5;
+        if (min >= TOTAL_MIN) state = tx.stateArrived;
+        el.stateText.textContent = state;
+
+        if (Math.abs(min - CATCH_MIN) <= 1) {
+          el.stateText.textContent = tx.stateCatch;
+        }
+      }
+
+      function withTime(template, time) {
+        return template.replace("{time}", time);
+      }
+
+      function setLang(nextLang) {
+        lang = nextLang;
+        const tx = i18n[lang];
+        const restTime = minToClock(REST_START_MIN);
+        const catchTime = minToClock(CATCH_MIN);
+
+        langEls.titleText.textContent = tx.title;
+        langEls.descJa.textContent = tx.descJa;
+        langEls.descZh.textContent = tx.descZh;
+        langEls.descEn.textContent = tx.descEn;
+        langEls.timeLabel.textContent = tx.timeLabel;
+        langEls.stateLabel.textContent = tx.stateLabel;
+        langEls.jDistLabel.textContent = tx.jDistLabel;
+        langEls.taroTitle.textContent = tx.taroTitle;
+        langEls.taroDistLabel.textContent = tx.taroDistLabel;
+        langEls.taroTotalLabel.textContent = tx.taroTotalLabel;
+        langEls.jiroTitle.textContent = tx.jiroTitle;
+        langEls.jiroDistLabel.textContent = tx.jiroDistLabel;
+        langEls.restInfo.textContent = withTime(tx.restInfo, restTime);
+        langEls.catchTitle.textContent = tx.catchTitle;
+        langEls.catchBadge.textContent = tx.catchBadge;
+        langEls.catchLine1.textContent = withTime(tx.catchLine1, catchTime);
+        langEls.catchLine2.textContent = tx.catchLine2;
+        langEls.answerLine.innerHTML = tx.answerLine;
+        langEls.footText.textContent = tx.footText;
+        langEls.v1.textContent = tx.vocab[0];
+        langEls.v2.textContent = tx.vocab[1];
+        langEls.v3.textContent = tx.vocab[2];
+        langEls.v4.textContent = tx.vocab[3];
+        langEls.v5.textContent = tx.vocab[4];
+        langEls.taroLabel.textContent = tx.taroName;
+        langEls.jiroLabel.textContent = tx.jiroName;
+
+        el.playBtn.textContent = tx.play;
+        el.pauseBtn.textContent = tx.pause;
+        el.resetBtn.textContent = tx.reset;
+        el.toRestBtn.textContent = tx.toRest;
+        el.toCatchBtn.textContent = tx.toCatch;
+        el.toEndBtn.textContent = tx.toEnd;
+
+        const englishFocus = lang === "en";
+        langEls.descJa.classList.toggle("hidden", englishFocus);
+        langEls.descZh.classList.toggle("hidden", englishFocus);
+        langEls.descEn.classList.toggle("hidden", !englishFocus);
+
+        Object.keys(langButtons).forEach((k) => {
+          langButtons[k].classList.toggle("active", k === lang);
+        });
+        autoLangBtn.textContent = autoLangTimer ? tx.autoLangStop : tx.autoLangStart;
+        autoLangBtn.classList.toggle("auto-on", Boolean(autoLangTimer));
+        tabButtons.problem.textContent = tx.tabProblem;
+        tabButtons.solution.textContent = tx.tabSolution;
+        tabButtons.animation.textContent = tx.tabAnimation;
+        teacherModeBtn.textContent = teacherMode ? tx.teacherModeOn : tx.teacherModeOff;
+        nextStepBtn.textContent = revealedSteps >= stepAnswers.length ? tx.allStepsShown : tx.nextStep;
+
+        document.querySelectorAll(".txt-ja").forEach((n) => n.classList.toggle("hidden", englishFocus));
+        document.querySelectorAll(".txt-zh").forEach((n) => n.classList.toggle("hidden", englishFocus));
+        document.querySelectorAll(".txt-en").forEach((n) => n.classList.toggle("hidden", !englishFocus));
+
+        updateTeacherModeUI();
+        render(currentMin);
+      }
+
+      function setTab(nextTab) {
+        activeTab = nextTab;
+        Object.keys(tabButtons).forEach((k) => {
+          tabButtons[k].classList.toggle("active", k === activeTab);
+          tabPanels[k].classList.toggle("hidden", k !== activeTab);
+        });
+      }
+
+      function updateTeacherModeUI() {
+        const tx = i18n[lang];
+        teacherModeBtn.textContent = teacherMode ? tx.teacherModeOn : tx.teacherModeOff;
+        teacherModeBtn.classList.toggle("on", teacherMode);
+        nextStepBtn.classList.toggle("hidden", !teacherMode);
+
+        if (!teacherMode) {
+          stepAnswers.forEach((elStep) => elStep.classList.remove("hidden"));
+          return;
+        }
+
+        stepAnswers.forEach((elStep, idx) => {
+          elStep.classList.toggle("hidden", idx >= revealedSteps);
+        });
+
+        nextStepBtn.textContent = revealedSteps >= stepAnswers.length ? tx.allStepsShown : tx.nextStep;
+      }
+
+      function toggleTeacherMode() {
+        teacherMode = !teacherMode;
+        if (teacherMode) {
+          revealedSteps = 0;
+        } else {
+          revealedSteps = stepAnswers.length;
+        }
+        updateTeacherModeUI();
+      }
+
+      function showNextStep() {
+        if (!teacherMode) return;
+        if (revealedSteps < stepAnswers.length) {
+          revealedSteps += 1;
+        }
+        updateTeacherModeUI();
+      }
+
+      function toggleAutoLang() {
+        if (autoLangTimer) {
+          clearInterval(autoLangTimer);
+          autoLangTimer = null;
+          setLang(lang);
+          return;
+        }
+
+        const order = ["ja", "zh", "en"];
+        autoLangTimer = setInterval(() => {
+          const idx = order.indexOf(lang);
+          const next = order[(idx + 1) % order.length];
+          setLang(next);
+        }, 10000);
+        setLang(lang);
+      }
+
+      function setMin(min) {
+        currentMin = Math.max(0, Math.min(TOTAL_MIN, min));
+        el.slider.value = String(Math.round(currentMin));
+        render(currentMin);
+      }
+
+      function play() {
+        if (timer) return;
+        timer = setInterval(() => {
+          if (currentMin >= TOTAL_MIN) {
+            pause();
+            return;
+          }
+          setMin(currentMin + 1);
+        }, 45);
+      }
+
+      function pause() {
+        if (timer) clearInterval(timer);
+        timer = null;
+      }
+
+      el.playBtn.addEventListener("click", play);
+      el.pauseBtn.addEventListener("click", pause);
+      el.resetBtn.addEventListener("click", () => {
+        pause();
+        setMin(0);
+      });
+      el.toRestBtn.addEventListener("click", () => setMin(REST_START_MIN));
+      el.toCatchBtn.addEventListener("click", () => setMin(CATCH_MIN));
+      el.toEndBtn.addEventListener("click", () => setMin(TOTAL_MIN));
+      el.slider.addEventListener("input", () => {
+        pause();
+        setMin(Number(el.slider.value));
+      });
+      langButtons.ja.addEventListener("click", () => setLang("ja"));
+      langButtons.zh.addEventListener("click", () => setLang("zh"));
+      langButtons.en.addEventListener("click", () => setLang("en"));
+      autoLangBtn.addEventListener("click", toggleAutoLang);
+      teacherModeBtn.addEventListener("click", toggleTeacherMode);
+      nextStepBtn.addEventListener("click", showNextStep);
+      tabButtons.problem.addEventListener("click", () => setTab("problem"));
+      tabButtons.solution.addEventListener("click", () => setTab("solution"));
+      tabButtons.animation.addEventListener("click", () => setTab("animation"));
+
+      revealedSteps = stepAnswers.length;
+      setLang("ja");
+      setTab("animation");
+      setMin(0);
+    })();
+  </script>
+</body>
+</html>
