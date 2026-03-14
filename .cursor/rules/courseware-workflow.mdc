@@ -1,0 +1,39 @@
+---
+description: Workflow rules for lesson authoring and release
+alwaysApply: true
+---
+
+# Open Courseware Lab Workflow
+
+## Project Goal
+- Build shareable multilingual interactive courseware across math/physics/chemistry.
+- Keep each problem as an independent lesson page under taxonomy paths.
+
+## Content Taxonomy (Required)
+- Store lessons at: `lessons/<subject>/<grade>/<topic>/<problem-slug>/`
+- Each lesson must include:
+  - `index.html`
+  - `meta.json`
+  - local assets in `assets/`
+- Use deploy-safe relative paths only (no local absolute filesystem paths).
+
+## Metadata and Catalog (Required)
+- Root homepage is a catalog page.
+- Catalog data comes from `lessons/manifest.json` (not hardcoded cards).
+- After adding/updating any `lessons/**/meta.json`, run:
+  - `node ./scripts/generate-lessons-manifest.mjs`
+- Ensure `lessons/manifest.json` is updated before release.
+
+## Release Flow (Required)
+- Use branch workflow: feature branch -> PR -> merge to `main`.
+- Respect protected main branch (no direct force push).
+- Deploy production from `main` with Cloudflare Pages:
+  - `npx wrangler pages deploy . --project-name open-courseware-lab --branch main`
+
+## QA Baseline Before Release
+- Verify root catalog renders cards and links to target lesson paths.
+- Verify lesson core interactions:
+  - tab switching
+  - teacher mode step reveal
+  - language switch + auto-rotate
+- Verify mobile behavior at least on 390px and 320px widths (no blocking overflow).
