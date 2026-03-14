@@ -210,7 +210,7 @@
     .controls {
       margin-top: 10px;
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
       gap: 8px;
     }
 
@@ -260,6 +260,43 @@
     }
 
     .chip b { margin-right: 6px; }
+
+    .scene-caption {
+      margin-top: 10px;
+      border: 1px solid #e5e7eb;
+      border-radius: 10px;
+      background: #f8fafc;
+      padding: 8px 10px;
+      font-size: 14px;
+      color: #1f2937;
+    }
+
+    .keyframes {
+      margin: 10px 0 0;
+      padding: 0;
+      list-style: none;
+      display: grid;
+      gap: 6px;
+    }
+
+    .keyframes li {
+      border: 1px solid #e5e7eb;
+      background: #fff;
+      border-radius: 10px;
+      padding: 8px 10px;
+      font-size: 13px;
+      color: #475569;
+      transition: all 0.2s ease;
+      opacity: 0.32;
+    }
+
+    .keyframes li.active {
+      border-color: #334155;
+      color: #111827;
+      background: #eef2ff;
+      transform: translateX(2px);
+      opacity: 1;
+    }
 
     @media (max-width: 860px) {
       .grid { grid-template-columns: 1fr; }
@@ -404,20 +441,30 @@
           <text id="beLabel" x="200" y="258" font-size="16" fill="#2563eb" opacity="0">BE = 1 part</text>
           <text id="edLabel" x="535" y="160" font-size="16" fill="#f59e0b" opacity="0">ED = 2 parts</text>
           <text id="sumLabel" x="24" y="32" font-size="16" fill="#374151">S(ABCD)=48, S(AED)=16, S(BFE):S(ABE)=1:2, S(EFCD)=20</text>
+          <rect id="focusDim" x="0" y="0" width="920" height="410" fill="#111827" opacity="0"></rect>
+          <circle id="focusRing" cx="355" cy="218" r="60" fill="none" stroke="#f8fafc" stroke-width="4" opacity="0"></circle>
         </svg>
 
         <div class="controls">
           <button id="playBtn" class="primary">再生</button>
           <button id="pauseBtn">暂停</button>
           <button id="resetBtn">重置</button>
-          <button id="toRatioBtn">跳到比例</button>
-          <button id="toAreaBtn">跳到面积</button>
+          <button id="toScene1Btn">分镜1</button>
+          <button id="toScene2Btn">分镜2</button>
+          <button id="toScene3Btn">分镜3</button>
         </div>
 
         <div class="slider-row">
           <input id="progressSlider" type="range" min="0" max="100" step="1" value="0" />
           <div id="clockText" style="font-weight:700;">0%</div>
         </div>
+
+        <div class="scene-caption" id="sceneText">分镜1：先聚焦 E 点与 BE:ED=1:2。</div>
+        <ul class="keyframes">
+          <li id="keyframe1">关键结论1：S(AED):S(ABCD)=1:3</li>
+          <li id="keyframe2">关键结论2：S(BFE):S(ABE)=1:2</li>
+          <li id="keyframe3">关键结论3：S(EFCD)=20 cm²</li>
+        </ul>
 
         <div class="legend">
           <div class="chip"><b style="color:#2563eb;">BLUE</b><span id="legend1">BE（1份）</span></div>
@@ -481,9 +528,19 @@
             ["3Blue1Brown determinant lesson", "https://www.3blue1brown.com/lessons/determinant"],
             ["Triangles on same base theorem explanation", "https://www.nagwa.com/en/explainers/192141038485/"]
           ],
-          play: "再生", pause: "一時停止", reset: "最初へ", toRatio: "比へ", toArea: "面積へ",
+          play: "再生", pause: "一時停止", reset: "最初へ", toScene1: "シーン1", toScene2: "シーン2", toScene3: "シーン3",
           legend: ["BE（1つ分）", "ED（2つ分）", "三角形 BFE", "三角形 AED"],
           sumLabel: "S(ABCD)=48, S(AED)=16, S(BFE):S(ABE)=1:2, S(EFCD)=20",
+          sceneTexts: [
+            "シーン1: E点と BE:ED=1:2 を色で確認",
+            "シーン2: AE と BD の関係から相似と面積比へ",
+            "シーン3: 面積分割を重ねて最終答えを確定"
+          ],
+          keyframes: [
+            "重要結論1: S(AED):S(ABCD)=1:3",
+            "重要結論2: S(BFE):S(ABE)=1:2",
+            "重要結論3: S(EFCD)=20 cm²"
+          ],
           verifyRows: [
             ["独立解法A", "面積比 + 相似", "(1)1:3, (2)1:2, (3)20", "小学生向けの主解法"],
             ["独立解法B", "座標法", "(1)1:3, (2)1:2, (3)20", "式で再現可能"],
@@ -537,9 +594,19 @@
             ["3Blue1Brown 行列式可视化", "https://www.3blue1brown.com/lessons/determinant"],
             ["同底同高（三角形面积定理）", "https://www.nagwa.com/en/explainers/192141038485/"]
           ],
-          play: "再生", pause: "暂停", reset: "重置", toRatio: "跳到比例", toArea: "跳到面积",
+          play: "再生", pause: "暂停", reset: "重置", toScene1: "分镜1", toScene2: "分镜2", toScene3: "分镜3",
           legend: ["BE（1份）", "ED（2份）", "三角形 BFE", "三角形 AED"],
           sumLabel: "S(ABCD)=48, S(AED)=16, S(BFE):S(ABE)=1:2, S(EFCD)=20",
+          sceneTexts: [
+            "分镜1：先聚焦 E 点与 BE:ED=1:2。",
+            "分镜2：从 AE 与 BD 的关系过渡到相似与面积比。",
+            "分镜3：叠加面积分块，逐帧收敛到最终结论。"
+          ],
+          keyframes: [
+            "关键结论1：S(AED):S(ABCD)=1:3",
+            "关键结论2：S(BFE):S(ABE)=1:2",
+            "关键结论3：S(EFCD)=20 cm²"
+          ],
           verifyRows: [
             ["独立解法A", "面积比 + 相似", "(1)1:3, (2)1:2, (3)20", "主解法，便于小学生理解"],
             ["独立解法B", "坐标法", "(1)1:3, (2)1:2, (3)20", "代数化复核"],
@@ -593,9 +660,19 @@
             ["3Blue1Brown determinant lesson", "https://www.3blue1brown.com/lessons/determinant"],
             ["Equal-area theorem for triangles", "https://www.nagwa.com/en/explainers/192141038485/"]
           ],
-          play: "Play", pause: "Pause", reset: "Reset", toRatio: "Jump to Ratio", toArea: "Jump to Area",
+          play: "Play", pause: "Pause", reset: "Reset", toScene1: "Scene 1", toScene2: "Scene 2", toScene3: "Scene 3",
           legend: ["BE (1 part)", "ED (2 parts)", "Triangle BFE", "Triangle AED"],
           sumLabel: "S(ABCD)=48, S(AED)=16, S(BFE):S(ABE)=1:2, S(EFCD)=20",
+          sceneTexts: [
+            "Scene 1: Focus on point E and BE:ED=1:2.",
+            "Scene 2: Move from AE/BD geometry to similarity and area ratio.",
+            "Scene 3: Layer area partitions and reveal final results."
+          ],
+          keyframes: [
+            "Key result 1: S(AED):S(ABCD)=1:3",
+            "Key result 2: S(BFE):S(ABE)=1:2",
+            "Key result 3: S(EFCD)=20 cm²"
+          ],
           verifyRows: [
             ["Independent method A", "Area ratio + similarity", "(1)1:3, (2)1:2, (3)20", "Primary student-friendly method"],
             ["Independent method B", "Coordinate method", "(1)1:3, (2)1:2, (3)20", "Algebraic cross-check"],
@@ -646,8 +723,9 @@
         playBtn: document.getElementById("playBtn"),
         pauseBtn: document.getElementById("pauseBtn"),
         resetBtn: document.getElementById("resetBtn"),
-        toRatioBtn: document.getElementById("toRatioBtn"),
-        toAreaBtn: document.getElementById("toAreaBtn"),
+        toScene1Btn: document.getElementById("toScene1Btn"),
+        toScene2Btn: document.getElementById("toScene2Btn"),
+        toScene3Btn: document.getElementById("toScene3Btn"),
         progressSlider: document.getElementById("progressSlider"),
         clockText: document.getElementById("clockText"),
         segBE: document.getElementById("segBE"),
@@ -662,6 +740,12 @@
         triAED: document.getElementById("triAED"),
         polyEFCD: document.getElementById("polyEFCD"),
         sumLabel: document.getElementById("sumLabel"),
+        focusDim: document.getElementById("focusDim"),
+        focusRing: document.getElementById("focusRing"),
+        sceneText: document.getElementById("sceneText"),
+        keyframe1: document.getElementById("keyframe1"),
+        keyframe2: document.getElementById("keyframe2"),
+        keyframe3: document.getElementById("keyframe3"),
         legend1: document.getElementById("legend1"),
         legend2: document.getElementById("legend2"),
         legend3: document.getElementById("legend3"),
@@ -686,6 +770,7 @@
       let revealedSteps = stepAnswers.length;
       let autoLangTimer = null;
       let playTimer = null;
+      let keyframeStage = 0;
 
       function fillList(el, arr) {
         el.innerHTML = arr.map((x) => `<li>${x}</li>`).join("");
@@ -729,13 +814,18 @@
         els.playBtn.textContent = tx.play;
         els.pauseBtn.textContent = tx.pause;
         els.resetBtn.textContent = tx.reset;
-        els.toRatioBtn.textContent = tx.toRatio;
-        els.toAreaBtn.textContent = tx.toArea;
+        els.toScene1Btn.textContent = tx.toScene1;
+        els.toScene2Btn.textContent = tx.toScene2;
+        els.toScene3Btn.textContent = tx.toScene3;
         els.legend1.textContent = tx.legend[0];
         els.legend2.textContent = tx.legend[1];
         els.legend3.textContent = tx.legend[2];
         els.legend4.textContent = tx.legend[3];
         els.sumLabel.textContent = tx.sumLabel;
+        els.sceneText.textContent = tx.sceneTexts[0];
+        els.keyframe1.textContent = tx.keyframes[0];
+        els.keyframe2.textContent = tx.keyframes[1];
+        els.keyframe3.textContent = tx.keyframes[2];
         els.autoLangBtn.textContent = autoLangTimer ? tx.autoOn : tx.autoOff;
 
         ["ja", "zh", "en"].forEach((k) => {
@@ -772,6 +862,14 @@
         stepAnswers.forEach((el, idx) => el.classList.toggle("hidden", idx >= revealedSteps));
       }
 
+      function setKeyframeStage(stage) {
+        keyframeStage = stage;
+        [els.keyframe1, els.keyframe2, els.keyframe3].forEach((k) => k.classList.remove("active"));
+        if (stage === 1) els.keyframe1.classList.add("active");
+        if (stage === 2) els.keyframe2.classList.add("active");
+        if (stage === 3) els.keyframe3.classList.add("active");
+      }
+
       function setProgress(v) {
         const p = Math.max(0, Math.min(100, Number(v)));
         els.progressSlider.value = String(p);
@@ -797,6 +895,40 @@
         els.triAED.setAttribute("fill", `rgba(124,58,237,${0.05 + areaPhase * 0.2})`);
         els.polyEFCD.setAttribute("fill", `rgba(245,158,11,${0.04 + areaPhase * 0.2})`);
         els.sumLabel.style.opacity = String(finalPhase);
+
+        const dimOpacity = p < 10 ? 0 : (p < 90 ? 0.2 : 0.28);
+        els.focusDim.style.opacity = String(dimOpacity);
+        els.focusRing.style.opacity = p < 12 ? "0" : "0.95";
+
+        const tx = i18n[lang];
+        let sceneIdx = 0;
+        if (p >= 70) sceneIdx = 2;
+        else if (p >= 35) sceneIdx = 1;
+
+        if (sceneIdx === 0) {
+          els.focusRing.setAttribute("cx", "355");
+          els.focusRing.setAttribute("cy", "218");
+          els.focusRing.setAttribute("r", "72");
+        } else if (sceneIdx === 1) {
+          els.focusRing.setAttribute("cx", "505");
+          els.focusRing.setAttribute("cy", "200");
+          els.focusRing.setAttribute("r", "118");
+        } else {
+          els.focusRing.setAttribute("cx", "530");
+          els.focusRing.setAttribute("cy", "240");
+          els.focusRing.setAttribute("r", "190");
+        }
+
+        els.sceneText.textContent = tx.sceneTexts[sceneIdx];
+        if (p <= 0) {
+          setKeyframeStage(0);
+        } else if (p < 34) {
+          setKeyframeStage(1);
+        } else if (p < 67) {
+          setKeyframeStage(2);
+        } else {
+          setKeyframeStage(3);
+        }
       }
 
       function play() {
@@ -808,7 +940,7 @@
             return;
           }
           setProgress(v + 1);
-        }, 45);
+        }, 65);
       }
 
       function pause() {
@@ -856,8 +988,18 @@
         pause();
         setProgress(0);
       });
-      els.toRatioBtn.addEventListener("click", () => setProgress(35));
-      els.toAreaBtn.addEventListener("click", () => setProgress(82));
+      els.toScene1Btn.addEventListener("click", () => {
+        setProgress(16);
+        setKeyframeStage(1);
+      });
+      els.toScene2Btn.addEventListener("click", () => {
+        setProgress(50);
+        setKeyframeStage(2);
+      });
+      els.toScene3Btn.addEventListener("click", () => {
+        setProgress(84);
+        setKeyframeStage(3);
+      });
       els.progressSlider.addEventListener("input", () => {
         pause();
         setProgress(els.progressSlider.value);
