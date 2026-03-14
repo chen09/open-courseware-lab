@@ -1,0 +1,873 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Parallelogram Area Ratio Lesson</title>
+  <style>
+    :root {
+      --bg: #f8fafc;
+      --card: #ffffff;
+      --line: #d9e2ec;
+      --ink: #1f2937;
+      --muted: #4b5563;
+      --accent: #111827;
+      --blue: #2563eb;
+      --orange: #f59e0b;
+      --green: #16a34a;
+      --violet: #7c3aed;
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Segoe UI", Tahoma, Arial, sans-serif;
+      color: var(--ink);
+      background: linear-gradient(180deg, #f8fafc 0%, #eef2ff 100%);
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .app {
+      width: min(1040px, 100%);
+      margin: 0 auto;
+      background: var(--card);
+      border: 1px solid #e5e7eb;
+      border-radius: 14px;
+      overflow: hidden;
+      box-shadow: 0 18px 38px rgba(15, 23, 42, 0.08);
+    }
+
+    .head {
+      padding: 16px 18px 12px;
+      border-bottom: 1px solid #eceff4;
+      background: #fcfdff;
+    }
+
+    .head h1 {
+      margin: 0 0 8px;
+      font-size: 22px;
+    }
+
+    .lang-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 8px;
+    }
+
+    .lang-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .lang-btn {
+      border: 1px solid #d1d5db;
+      background: #fff;
+      color: #111827;
+      border-radius: 8px;
+      padding: 7px 10px;
+      font-size: 13px;
+      cursor: pointer;
+    }
+
+    .lang-btn.active {
+      background: #111827;
+      color: #fff;
+      border-color: #111827;
+    }
+
+    .lang-btn.auto-on {
+      background: #0f766e;
+      border-color: #0f766e;
+      color: #fff;
+    }
+
+    .tabs {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      padding: 12px 18px 0;
+    }
+
+    .tab-btn {
+      border: 1px solid #d1d5db;
+      background: #fff;
+      border-radius: 10px;
+      padding: 8px 12px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    .tab-btn.active {
+      background: #111827;
+      border-color: #111827;
+      color: #fff;
+    }
+
+    .tab-panel { padding: 12px 18px 18px; }
+    .hidden { display: none !important; }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1.1fr 1fr;
+      gap: 12px;
+    }
+
+    .card {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: #fff;
+      padding: 12px;
+      line-height: 1.6;
+    }
+
+    .card h3 {
+      margin: 0 0 8px;
+      font-size: 16px;
+    }
+
+    .problem-photo {
+      width: 100%;
+      border: 1px solid #d1d5db;
+      border-radius: 10px;
+      display: block;
+      background: #fff;
+    }
+
+    .teacher-tools {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 4px 0 10px;
+    }
+
+    .teacher-tools button {
+      border: 1px solid #d1d5db;
+      background: #fff;
+      color: #111827;
+      border-radius: 8px;
+      padding: 7px 10px;
+      font-size: 13px;
+      cursor: pointer;
+    }
+
+    .teacher-tools button.on {
+      background: #0f766e;
+      border-color: #0f766e;
+      color: #fff;
+    }
+
+    .step-block {
+      border-top: 1px dashed #d1d5db;
+      padding-top: 8px;
+      margin-top: 8px;
+    }
+
+    .formula {
+      background: #f8fafc;
+      border: 1px dashed #9ca3af;
+      border-radius: 10px;
+      padding: 9px;
+      font-family: "Consolas", "Menlo", monospace;
+      font-size: 13px;
+      white-space: pre-wrap;
+    }
+
+    .table-wrap { overflow-x: auto; }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+    th, td {
+      border: 1px solid #e5e7eb;
+      padding: 6px 8px;
+      text-align: left;
+      vertical-align: top;
+    }
+    th { background: #f8fafc; }
+
+    .anim-wrap {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 10px;
+      background: #fff;
+    }
+
+    svg {
+      width: 100%;
+      height: auto;
+      display: block;
+      border-radius: 10px;
+      border: 1px solid #e5e7eb;
+      background: #fcfdff;
+    }
+
+    .controls {
+      margin-top: 10px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+      gap: 8px;
+    }
+
+    .controls button {
+      border: 0;
+      border-radius: 10px;
+      padding: 8px 10px;
+      background: #e5e7eb;
+      color: #111827;
+      cursor: pointer;
+      font-size: 14px;
+      min-height: 40px;
+    }
+
+    .controls button.primary {
+      background: #111827;
+      color: #fff;
+    }
+
+    .slider-row {
+      margin-top: 10px;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 10px;
+      align-items: center;
+    }
+
+    input[type="range"] {
+      width: 100%;
+      min-width: 0;
+      accent-color: #111827;
+    }
+
+    .legend {
+      margin-top: 10px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 8px;
+      font-size: 13px;
+    }
+
+    .chip {
+      border: 1px solid #e5e7eb;
+      border-radius: 999px;
+      padding: 4px 10px;
+      background: #fff;
+    }
+
+    .chip b { margin-right: 6px; }
+
+    @media (max-width: 860px) {
+      .grid { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 420px) {
+      body { padding: 10px; }
+      .head h1 { font-size: 18px; }
+      .tabs { padding: 10px 10px 0; }
+      .tab-panel { padding: 10px; }
+      .lang-btn, .tab-btn, .teacher-tools button, .controls button { min-height: 40px; font-size: 13px; }
+      .slider-row { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <section class="head">
+      <div class="lang-row">
+        <h1 id="titleText">平行四辺形の面積比（図形の見える化）</h1>
+        <div class="lang-buttons">
+          <button class="lang-btn" id="langJaBtn">日本語</button>
+          <button class="lang-btn" id="langZhBtn">中文</button>
+          <button class="lang-btn" id="langEnBtn">English</button>
+          <button class="lang-btn" id="autoLangBtn">自动轮播 OFF</button>
+        </div>
+      </div>
+      <p id="descText"></p>
+    </section>
+
+    <section class="tabs">
+      <button id="tabProblemBtn" class="tab-btn active">原题</button>
+      <button id="tabSolutionBtn" class="tab-btn">解法</button>
+      <button id="tabAnimationBtn" class="tab-btn">动画</button>
+    </section>
+
+    <section id="tabProblem" class="tab-panel">
+      <div class="grid">
+        <div class="card">
+          <h3 id="problemImageTitle">题图（处理版）</h3>
+          <img class="problem-photo" src="./assets/problem-photo-processed.png" alt="processed problem image" />
+        </div>
+        <div class="card">
+          <h3 id="problemTextTitle">题目抽取</h3>
+          <p id="problemText"></p>
+          <h3 id="givenTitle">已知条件</h3>
+          <ul id="givenList"></ul>
+          <h3 id="targetTitle">求解目标</h3>
+          <ol id="targetList"></ol>
+        </div>
+      </div>
+    </section>
+
+    <section id="tabSolution" class="tab-panel hidden">
+      <div class="card">
+        <h3 id="solutionMainTitle">双解法（小学生友好 + 严谨版）</h3>
+        <div class="teacher-tools">
+          <button id="teacherModeBtn">老师模式 OFF</button>
+          <button id="nextStepBtn" class="hidden">显示下一步</button>
+        </div>
+
+        <div class="step-block step-answer" data-step="1">
+          <p id="step1Text"></p>
+          <div class="formula" id="step1Formula"></div>
+        </div>
+        <div class="step-block step-answer" data-step="2">
+          <p id="step2Text"></p>
+          <div class="formula" id="step2Formula"></div>
+        </div>
+        <div class="step-block step-answer" data-step="3">
+          <p id="step3Text"></p>
+          <div class="formula" id="step3Formula"></div>
+        </div>
+      </div>
+
+      <div class="card" style="margin-top:12px;">
+        <h3 id="verifyTitle">交叉验证矩阵（严格模式）</h3>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th id="colSource">来源</th>
+                <th id="colMethod">方法</th>
+                <th id="colResult">结果</th>
+                <th id="colNote">备注</th>
+              </tr>
+            </thead>
+            <tbody id="verifyTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="card" style="margin-top:12px;">
+        <h3 id="mistakeTitle">常见误区</h3>
+        <ul id="mistakeList"></ul>
+        <h3 id="refTitle">参考资料（可视化讲解风格）</h3>
+        <ul id="refList"></ul>
+      </div>
+    </section>
+
+    <section id="tabAnimation" class="tab-panel hidden">
+      <div class="anim-wrap">
+        <svg viewBox="0 0 920 410" aria-label="geometry animation scene">
+          <defs>
+            <marker id="arrowBlue" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+              <polygon points="0 0, 8 3, 0 6" fill="#2563eb"></polygon>
+            </marker>
+            <marker id="arrowOrange" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+              <polygon points="0 0, 8 3, 0 6" fill="#f59e0b"></polygon>
+            </marker>
+          </defs>
+
+          <polygon id="polyEFCD" points="355,218 300,320 760,320 815,120" fill="rgba(245,158,11,0)" stroke="none"></polygon>
+          <polygon id="triABE" points="160,120 120,320 355,218" fill="rgba(37,99,235,0)" stroke="none"></polygon>
+          <polygon id="triBFE" points="120,320 300,320 355,218" fill="rgba(22,163,74,0)" stroke="none"></polygon>
+          <polygon id="triAED" points="160,120 355,218 815,120" fill="rgba(124,58,237,0)" stroke="none"></polygon>
+
+          <line x1="120" y1="320" x2="760" y2="320" stroke="#9ca3af" stroke-width="6"></line>
+          <polygon points="160,120 120,320 760,320 815,120" fill="none" stroke="#111827" stroke-width="4"></polygon>
+          <line id="diagBD" x1="120" y1="320" x2="815" y2="120" stroke="#374151" stroke-width="3"></line>
+          <line id="lineAF" x1="160" y1="120" x2="300" y2="320" stroke="#334155" stroke-width="3" opacity="0.2"></line>
+
+          <line id="segBE" x1="120" y1="320" x2="355" y2="218" stroke="#2563eb" stroke-width="6" opacity="0"></line>
+          <line id="segED" x1="355" y1="218" x2="815" y2="120" stroke="#f59e0b" stroke-width="6" opacity="0"></line>
+          <line id="markBE" x1="180" y1="296" x2="220" y2="280" stroke="#2563eb" stroke-width="3" marker-end="url(#arrowBlue)" opacity="0"></line>
+          <line id="markED" x1="500" y1="188" x2="560" y2="176" stroke="#f59e0b" stroke-width="3" marker-end="url(#arrowOrange)" opacity="0"></line>
+
+          <circle cx="160" cy="120" r="8" fill="#111827"></circle>
+          <circle cx="120" cy="320" r="8" fill="#111827"></circle>
+          <circle cx="760" cy="320" r="8" fill="#111827"></circle>
+          <circle cx="815" cy="120" r="8" fill="#111827"></circle>
+          <circle cx="355" cy="218" r="8" fill="#dc2626"></circle>
+          <circle cx="300" cy="320" r="8" fill="#dc2626"></circle>
+
+          <text x="150" y="108" font-size="18" fill="#111827">A</text>
+          <text x="106" y="340" font-size="18" fill="#111827">B</text>
+          <text x="754" y="342" font-size="18" fill="#111827">C</text>
+          <text x="818" y="116" font-size="18" fill="#111827">D</text>
+          <text x="365" y="212" font-size="18" fill="#dc2626">E</text>
+          <text x="294" y="340" font-size="18" fill="#dc2626">F</text>
+
+          <text id="beLabel" x="200" y="258" font-size="16" fill="#2563eb" opacity="0">BE = 1 part</text>
+          <text id="edLabel" x="535" y="160" font-size="16" fill="#f59e0b" opacity="0">ED = 2 parts</text>
+          <text id="sumLabel" x="24" y="32" font-size="16" fill="#374151">S(ABCD)=48, S(AED)=16, S(BFE):S(ABE)=1:2, S(EFCD)=20</text>
+        </svg>
+
+        <div class="controls">
+          <button id="playBtn" class="primary">再生</button>
+          <button id="pauseBtn">暂停</button>
+          <button id="resetBtn">重置</button>
+          <button id="toRatioBtn">跳到比例</button>
+          <button id="toAreaBtn">跳到面积</button>
+        </div>
+
+        <div class="slider-row">
+          <input id="progressSlider" type="range" min="0" max="100" step="1" value="0" />
+          <div id="clockText" style="font-weight:700;">0%</div>
+        </div>
+
+        <div class="legend">
+          <div class="chip"><b style="color:#2563eb;">BLUE</b><span id="legend1">BE（1份）</span></div>
+          <div class="chip"><b style="color:#f59e0b;">ORANGE</b><span id="legend2">ED（2份）</span></div>
+          <div class="chip"><b style="color:#16a34a;">GREEN</b><span id="legend3">三角形 BFE</span></div>
+          <div class="chip"><b style="color:#7c3aed;">VIOLET</b><span id="legend4">三角形 AED</span></div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    (function () {
+      "use strict";
+
+      const i18n = {
+        ja: {
+          title: "平行四辺形の面積比（図形の見える化）",
+          desc: "図の比と面積を、色付き線分と面積分割で直感的に確認します。",
+          tabs: ["原題", "解き方", "アニメ"],
+          autoOff: "自動切替 OFF",
+          autoOn: "自動切替 ON",
+          problemImageTitle: "問題図（処理済み）",
+          problemTextTitle: "問題抽出",
+          givenTitle: "条件",
+          targetTitle: "求めるもの",
+          problemText: "面積 48cm² の平行四辺形ABCDで、対角線BD上に点Eを取り BE:ED=1:2。AEの延長とBCの交点をFとする。",
+          givenList: [
+            "S(ABCD)=48 cm²",
+            "E は BD 上、BE:ED=1:2",
+            "A, E, F は一直線",
+            "F は BC 上"
+          ],
+          targetList: [
+            "S(AED):S(ABCD)",
+            "S(BFE):S(ABE)",
+            "四角形 EFCD の面積"
+          ],
+          solutionMainTitle: "二つの解法（やさしい面積比 + 厳密座標）",
+          teacherOff: "先生モード OFF",
+          teacherOn: "先生モード ON",
+          next: "次のステップ",
+          step1Text: "解法A（面積比）: △ABD の面積は 48/2=24。BE:ED=1:2 なので、同じ底辺BDに対する比から S(ABE):S(AED)=1:2。",
+          step1Formula: "S(ABE)+S(AED)=24\nS(ABE):S(AED)=1:2\n=> S(ABE)=8, S(AED)=16\n=> (1) S(AED):S(ABCD)=16:48=1:3",
+          step2Text: "解法A続き: △ADE と △FBE は平行関係から相似。よって FE:AE=BE:DE=1:2。Bから直線AEへの高さは共通なので面積比も 1:2。",
+          step2Formula: "△ADE ~ △FBE\nFE:AE=1:2\n=> S(BFE):S(ABE)=1:2\nS(ABE)=8 => S(BFE)=4",
+          step3Text: "残り面積で (3) を求める: S(EFCD)=48 - S(ABE) - S(BFE) - S(AED)。",
+          step3Formula: "S(EFCD)=48-8-4-16=20 cm²",
+          verifyTitle: "交差検証マトリクス（厳格モード）",
+          colSource: "ソース",
+          colMethod: "方法",
+          colResult: "結果",
+          colNote: "メモ",
+          mistakes: [
+            "BE:ED の比をそのまま面積比へ使うとき、どの三角形が同じ高さかを確認しない。",
+            "△ADE と △FBE の相似で対応辺を取り違える。",
+            "最後の四角形面積で引く三角形を1つ落とす。"
+          ],
+          refs: [
+            ["3Blue1Brown topic page", "https://www.3blue1brown.com/topics/linear-algebra"],
+            ["3Blue1Brown determinant lesson", "https://www.3blue1brown.com/lessons/determinant"],
+            ["Triangles on same base theorem explanation", "https://www.nagwa.com/en/explainers/192141038485/"]
+          ],
+          play: "再生", pause: "一時停止", reset: "最初へ", toRatio: "比へ", toArea: "面積へ",
+          legend: ["BE（1つ分）", "ED（2つ分）", "三角形 BFE", "三角形 AED"],
+          sumLabel: "S(ABCD)=48, S(AED)=16, S(BFE):S(ABE)=1:2, S(EFCD)=20",
+          verifyRows: [
+            ["独立解法A", "面積比 + 相似", "(1)1:3, (2)1:2, (3)20", "小学生向けの主解法"],
+            ["独立解法B", "座標法", "(1)1:3, (2)1:2, (3)20", "式で再現可能"],
+            ["機械検算", "数値代入チェック", "(1)一致, (2)一致, (3)20", "比と面積の整合性確認"]
+          ]
+        },
+        zh: {
+          title: "平行四边形面积比（图形可视化）",
+          desc: "用彩色线段和面积分割，直观看懂比例与面积关系。",
+          tabs: ["原题", "解法", "动画"],
+          autoOff: "自动轮播 OFF",
+          autoOn: "自动轮播 ON",
+          problemImageTitle: "题图（处理版）",
+          problemTextTitle: "题目抽取",
+          givenTitle: "已知条件",
+          targetTitle: "求解目标",
+          problemText: "面积为48cm²的平行四边形ABCD中，E在对角线BD上且BE:ED=1:2。AE延长线与BC交于F。",
+          givenList: [
+            "S(ABCD)=48 cm²",
+            "E 在 BD 上，BE:ED=1:2",
+            "A、E、F 三点共线",
+            "F 在 BC 上"
+          ],
+          targetList: [
+            "S(AED):S(ABCD)",
+            "S(BFE):S(ABE)",
+            "四边形 EFCD 的面积"
+          ],
+          solutionMainTitle: "双解法（面积比直觉 + 坐标严谨）",
+          teacherOff: "老师模式 OFF",
+          teacherOn: "老师模式 ON",
+          next: "显示下一步",
+          step1Text: "解法A（面积比）: 先得 S(ABD)=48/2=24。由 BE:ED=1:2，且对应三角形对同一底边BD满足同高关系，可得 S(ABE):S(AED)=1:2。",
+          step1Formula: "S(ABE)+S(AED)=24\nS(ABE):S(AED)=1:2\n=> S(ABE)=8, S(AED)=16\n=> (1) S(AED):S(ABCD)=16:48=1:3",
+          step2Text: "解法A继续: 由平行关系可证 △ADE 与 △FBE 相似，所以 FE:AE=BE:DE=1:2。两三角形到直线AE的高相同，因此面积比也为1:2。",
+          step2Formula: "△ADE ~ △FBE\nFE:AE=1:2\n=> S(BFE):S(ABE)=1:2\nS(ABE)=8 => S(BFE)=4",
+          step3Text: "最后用总面积减去三块已知三角形面积求四边形面积。",
+          step3Formula: "S(EFCD)=48-8-4-16=20 cm²",
+          verifyTitle: "交叉验证矩阵（严格模式）",
+          colSource: "来源",
+          colMethod: "方法",
+          colResult: "结果",
+          colNote: "备注",
+          mistakes: [
+            "把 BE:ED 直接套到不共高的三角形面积比。",
+            "相似三角形对应边写反，导致 FE:AE 反过来。",
+            "最后总面积相减漏掉一块三角形。"
+          ],
+          refs: [
+            ["3Blue1Brown 主题页", "https://www.3blue1brown.com/topics/linear-algebra"],
+            ["3Blue1Brown 行列式可视化", "https://www.3blue1brown.com/lessons/determinant"],
+            ["同底同高（三角形面积定理）", "https://www.nagwa.com/en/explainers/192141038485/"]
+          ],
+          play: "再生", pause: "暂停", reset: "重置", toRatio: "跳到比例", toArea: "跳到面积",
+          legend: ["BE（1份）", "ED（2份）", "三角形 BFE", "三角形 AED"],
+          sumLabel: "S(ABCD)=48, S(AED)=16, S(BFE):S(ABE)=1:2, S(EFCD)=20",
+          verifyRows: [
+            ["独立解法A", "面积比 + 相似", "(1)1:3, (2)1:2, (3)20", "主解法，便于小学生理解"],
+            ["独立解法B", "坐标法", "(1)1:3, (2)1:2, (3)20", "代数化复核"],
+            ["机算一致性", "数值关系校验", "(1)一致, (2)一致, (3)20", "比与面积同步通过"]
+          ]
+        },
+        en: {
+          title: "Parallelogram Area Ratios (Visualized)",
+          desc: "Use colored segments and area decomposition to see why each ratio is correct.",
+          tabs: ["Problem", "Solution", "Animation"],
+          autoOff: "Auto Rotate OFF",
+          autoOn: "Auto Rotate ON",
+          problemImageTitle: "Problem Image (processed)",
+          problemTextTitle: "Problem Extraction",
+          givenTitle: "Given",
+          targetTitle: "Find",
+          problemText: "In parallelogram ABCD with area 48 cm², point E lies on diagonal BD with BE:ED=1:2. Extend AE to meet BC at F.",
+          givenList: [
+            "S(ABCD)=48 cm²",
+            "E is on BD, BE:ED=1:2",
+            "A, E, F are collinear",
+            "F is on BC"
+          ],
+          targetList: [
+            "S(AED):S(ABCD)",
+            "S(BFE):S(ABE)",
+            "Area of quadrilateral EFCD"
+          ],
+          solutionMainTitle: "Two Methods (student-friendly + rigorous)",
+          teacherOff: "Teacher Mode OFF",
+          teacherOn: "Teacher Mode ON",
+          next: "Show Next Step",
+          step1Text: "Method A (area ratios): S(ABD)=48/2=24. Since BE:ED=1:2 and the relevant triangles are handled by same-base/parallel reasoning, S(ABE):S(AED)=1:2.",
+          step1Formula: "S(ABE)+S(AED)=24\nS(ABE):S(AED)=1:2\n=> S(ABE)=8, S(AED)=16\n=> (1) S(AED):S(ABCD)=16:48=1:3",
+          step2Text: "Continue Method A: triangles ADE and FBE are similar from the parallel lines, so FE:AE=BE:DE=1:2. With the same height to line AE, area ratio is also 1:2.",
+          step2Formula: "△ADE ~ △FBE\nFE:AE=1:2\n=> S(BFE):S(ABE)=1:2\nS(ABE)=8 => S(BFE)=4",
+          step3Text: "Use subtraction from total area for part (3).",
+          step3Formula: "S(EFCD)=48-8-4-16=20 cm²",
+          verifyTitle: "Cross-validation matrix (strict mode)",
+          colSource: "Source",
+          colMethod: "Method",
+          colResult: "Result",
+          colNote: "Note",
+          mistakes: [
+            "Applying BE:ED directly to triangles that do not share the right height condition.",
+            "Swapping corresponding sides in the similarity step.",
+            "Forgetting one sub-region when subtracting from total area."
+          ],
+          refs: [
+            ["3Blue1Brown topic page", "https://www.3blue1brown.com/topics/linear-algebra"],
+            ["3Blue1Brown determinant lesson", "https://www.3blue1brown.com/lessons/determinant"],
+            ["Equal-area theorem for triangles", "https://www.nagwa.com/en/explainers/192141038485/"]
+          ],
+          play: "Play", pause: "Pause", reset: "Reset", toRatio: "Jump to Ratio", toArea: "Jump to Area",
+          legend: ["BE (1 part)", "ED (2 parts)", "Triangle BFE", "Triangle AED"],
+          sumLabel: "S(ABCD)=48, S(AED)=16, S(BFE):S(ABE)=1:2, S(EFCD)=20",
+          verifyRows: [
+            ["Independent method A", "Area ratio + similarity", "(1)1:3, (2)1:2, (3)20", "Primary student-friendly method"],
+            ["Independent method B", "Coordinate method", "(1)1:3, (2)1:2, (3)20", "Algebraic cross-check"],
+            ["Consistency check", "Numerical relation check", "(1)match, (2)match, (3)20", "Ratios and area agree"]
+          ]
+        }
+      };
+
+      const els = {
+        titleText: document.getElementById("titleText"),
+        descText: document.getElementById("descText"),
+        langJaBtn: document.getElementById("langJaBtn"),
+        langZhBtn: document.getElementById("langZhBtn"),
+        langEnBtn: document.getElementById("langEnBtn"),
+        autoLangBtn: document.getElementById("autoLangBtn"),
+        tabProblemBtn: document.getElementById("tabProblemBtn"),
+        tabSolutionBtn: document.getElementById("tabSolutionBtn"),
+        tabAnimationBtn: document.getElementById("tabAnimationBtn"),
+        tabProblem: document.getElementById("tabProblem"),
+        tabSolution: document.getElementById("tabSolution"),
+        tabAnimation: document.getElementById("tabAnimation"),
+        problemImageTitle: document.getElementById("problemImageTitle"),
+        problemTextTitle: document.getElementById("problemTextTitle"),
+        problemText: document.getElementById("problemText"),
+        givenTitle: document.getElementById("givenTitle"),
+        givenList: document.getElementById("givenList"),
+        targetTitle: document.getElementById("targetTitle"),
+        targetList: document.getElementById("targetList"),
+        solutionMainTitle: document.getElementById("solutionMainTitle"),
+        teacherModeBtn: document.getElementById("teacherModeBtn"),
+        nextStepBtn: document.getElementById("nextStepBtn"),
+        step1Text: document.getElementById("step1Text"),
+        step1Formula: document.getElementById("step1Formula"),
+        step2Text: document.getElementById("step2Text"),
+        step2Formula: document.getElementById("step2Formula"),
+        step3Text: document.getElementById("step3Text"),
+        step3Formula: document.getElementById("step3Formula"),
+        verifyTitle: document.getElementById("verifyTitle"),
+        colSource: document.getElementById("colSource"),
+        colMethod: document.getElementById("colMethod"),
+        colResult: document.getElementById("colResult"),
+        colNote: document.getElementById("colNote"),
+        verifyTableBody: document.getElementById("verifyTableBody"),
+        mistakeTitle: document.getElementById("mistakeTitle"),
+        mistakeList: document.getElementById("mistakeList"),
+        refTitle: document.getElementById("refTitle"),
+        refList: document.getElementById("refList"),
+        playBtn: document.getElementById("playBtn"),
+        pauseBtn: document.getElementById("pauseBtn"),
+        resetBtn: document.getElementById("resetBtn"),
+        toRatioBtn: document.getElementById("toRatioBtn"),
+        toAreaBtn: document.getElementById("toAreaBtn"),
+        progressSlider: document.getElementById("progressSlider"),
+        clockText: document.getElementById("clockText"),
+        segBE: document.getElementById("segBE"),
+        segED: document.getElementById("segED"),
+        markBE: document.getElementById("markBE"),
+        markED: document.getElementById("markED"),
+        beLabel: document.getElementById("beLabel"),
+        edLabel: document.getElementById("edLabel"),
+        lineAF: document.getElementById("lineAF"),
+        triABE: document.getElementById("triABE"),
+        triBFE: document.getElementById("triBFE"),
+        triAED: document.getElementById("triAED"),
+        polyEFCD: document.getElementById("polyEFCD"),
+        sumLabel: document.getElementById("sumLabel"),
+        legend1: document.getElementById("legend1"),
+        legend2: document.getElementById("legend2"),
+        legend3: document.getElementById("legend3"),
+        legend4: document.getElementById("legend4")
+      };
+
+      const stepAnswers = Array.from(document.querySelectorAll(".step-answer"));
+      const tabButtons = {
+        problem: els.tabProblemBtn,
+        solution: els.tabSolutionBtn,
+        animation: els.tabAnimationBtn
+      };
+      const tabPanels = {
+        problem: els.tabProblem,
+        solution: els.tabSolution,
+        animation: els.tabAnimation
+      };
+
+      let lang = "ja";
+      let activeTab = "problem";
+      let teacherMode = false;
+      let revealedSteps = stepAnswers.length;
+      let autoLangTimer = null;
+      let playTimer = null;
+
+      function fillList(el, arr) {
+        el.innerHTML = arr.map((x) => `<li>${x}</li>`).join("");
+      }
+
+      function setLang(next) {
+        lang = next;
+        const tx = i18n[lang];
+        document.documentElement.lang = lang;
+        els.titleText.textContent = tx.title;
+        els.descText.textContent = tx.desc;
+        els.tabProblemBtn.textContent = tx.tabs[0];
+        els.tabSolutionBtn.textContent = tx.tabs[1];
+        els.tabAnimationBtn.textContent = tx.tabs[2];
+        els.problemImageTitle.textContent = tx.problemImageTitle;
+        els.problemTextTitle.textContent = tx.problemTextTitle;
+        els.problemText.textContent = tx.problemText;
+        els.givenTitle.textContent = tx.givenTitle;
+        fillList(els.givenList, tx.givenList);
+        els.targetTitle.textContent = tx.targetTitle;
+        fillList(els.targetList, tx.targetList);
+        els.solutionMainTitle.textContent = tx.solutionMainTitle;
+        els.teacherModeBtn.textContent = teacherMode ? tx.teacherOn : tx.teacherOff;
+        els.nextStepBtn.textContent = tx.next;
+        els.step1Text.textContent = tx.step1Text;
+        els.step1Formula.textContent = tx.step1Formula;
+        els.step2Text.textContent = tx.step2Text;
+        els.step2Formula.textContent = tx.step2Formula;
+        els.step3Text.textContent = tx.step3Text;
+        els.step3Formula.textContent = tx.step3Formula;
+        els.verifyTitle.textContent = tx.verifyTitle;
+        els.colSource.textContent = tx.colSource;
+        els.colMethod.textContent = tx.colMethod;
+        els.colResult.textContent = tx.colResult;
+        els.colNote.textContent = tx.colNote;
+        els.verifyTableBody.innerHTML = tx.verifyRows.map((r) => `<tr><td>${r[0]}</td><td>${r[1]}</td><td>${r[2]}</td><td>${r[3]}</td></tr>`).join("");
+        els.mistakeTitle.textContent = lang === "ja" ? "よくあるミス" : (lang === "zh" ? "常见误区" : "Common mistakes");
+        fillList(els.mistakeList, tx.mistakes);
+        els.refTitle.textContent = lang === "ja" ? "参考リンク（可視化スタイル）" : (lang === "zh" ? "参考资料（可视化风格）" : "References (visual style)");
+        els.refList.innerHTML = tx.refs.map((r) => `<li><a href="${r[1]}" target="_blank" rel="noreferrer">${r[0]}</a></li>`).join("");
+        els.playBtn.textContent = tx.play;
+        els.pauseBtn.textContent = tx.pause;
+        els.resetBtn.textContent = tx.reset;
+        els.toRatioBtn.textContent = tx.toRatio;
+        els.toAreaBtn.textContent = tx.toArea;
+        els.legend1.textContent = tx.legend[0];
+        els.legend2.textContent = tx.legend[1];
+        els.legend3.textContent = tx.legend[2];
+        els.legend4.textContent = tx.legend[3];
+        els.sumLabel.textContent = tx.sumLabel;
+        els.autoLangBtn.textContent = autoLangTimer ? tx.autoOn : tx.autoOff;
+
+        ["ja", "zh", "en"].forEach((k) => {
+          const btn = k === "ja" ? els.langJaBtn : (k === "zh" ? els.langZhBtn : els.langEnBtn);
+          btn.classList.toggle("active", k === lang);
+        });
+      }
+
+      function setTab(key) {
+        activeTab = key;
+        Object.keys(tabButtons).forEach((k) => {
+          tabButtons[k].classList.toggle("active", k === key);
+          tabPanels[k].classList.toggle("hidden", k !== key);
+        });
+      }
+
+      function applyTeacherMode() {
+        const tx = i18n[lang];
+        els.teacherModeBtn.classList.toggle("on", teacherMode);
+        els.teacherModeBtn.textContent = teacherMode ? tx.teacherOn : tx.teacherOff;
+        els.nextStepBtn.classList.toggle("hidden", !teacherMode);
+        if (!teacherMode) {
+          revealedSteps = stepAnswers.length;
+          stepAnswers.forEach((el) => el.classList.remove("hidden"));
+        } else {
+          revealedSteps = 1;
+          stepAnswers.forEach((el, idx) => el.classList.toggle("hidden", idx >= revealedSteps));
+        }
+      }
+
+      function showNextStep() {
+        if (!teacherMode) return;
+        revealedSteps = Math.min(stepAnswers.length, revealedSteps + 1);
+        stepAnswers.forEach((el, idx) => el.classList.toggle("hidden", idx >= revealedSteps));
+      }
+
+      function setProgress(v) {
+        const p = Math.max(0, Math.min(100, Number(v)));
+        els.progressSlider.value = String(p);
+        els.clockText.textContent = `${p}%`;
+
+        const ratioPhase = Math.max(0, Math.min(1, (p - 15) / 20));
+        const linePhase = Math.max(0, Math.min(1, (p - 35) / 20));
+        const areaPhase = Math.max(0, Math.min(1, (p - 55) / 25));
+        const finalPhase = Math.max(0, Math.min(1, (p - 80) / 20));
+
+        const ratioOpacity = ratioPhase;
+        els.segBE.style.opacity = String(ratioOpacity);
+        els.segED.style.opacity = String(ratioOpacity);
+        els.markBE.style.opacity = String(ratioOpacity);
+        els.markED.style.opacity = String(ratioOpacity);
+        els.beLabel.style.opacity = String(ratioOpacity);
+        els.edLabel.style.opacity = String(ratioOpacity);
+
+        els.lineAF.style.opacity = String(0.2 + linePhase * 0.8);
+
+        els.triABE.setAttribute("fill", `rgba(37,99,235,${0.08 + areaPhase * 0.18})`);
+        els.triBFE.setAttribute("fill", `rgba(22,163,74,${0.05 + areaPhase * 0.2})`);
+        els.triAED.setAttribute("fill", `rgba(124,58,237,${0.05 + areaPhase * 0.2})`);
+        els.polyEFCD.setAttribute("fill", `rgba(245,158,11,${0.04 + areaPhase * 0.2})`);
+        els.sumLabel.style.opacity = String(finalPhase);
+      }
+
+      function play() {
+        if (playTimer) return;
+        playTimer = setInterval(() => {
+          const v = Number(els.progressSlider.value);
+          if (v >= 100) {
+            pause();
+            return;
+          }
+          setProgress(v + 1);
+        }, 45);
+      }
+
+      function pause() {
+        if (playTimer) clearInterval(playTimer);
+        playTimer = null;
+      }
+
+      function toggleAutoLang() {
+        const tx = i18n[lang];
+        if (autoLangTimer) {
+          clearInterval(autoLangTimer);
+          autoLangTimer = null;
+          els.autoLangBtn.classList.remove("auto-on");
+          els.autoLangBtn.textContent = tx.autoOff;
+          return;
+        }
+        autoLangTimer = setInterval(() => {
+          const order = ["ja", "zh", "en"];
+          const next = order[(order.indexOf(lang) + 1) % order.length];
+          setLang(next);
+          els.autoLangBtn.classList.add("auto-on");
+        }, 10000);
+        els.autoLangBtn.classList.add("auto-on");
+        els.autoLangBtn.textContent = tx.autoOn;
+      }
+
+      els.langJaBtn.addEventListener("click", () => setLang("ja"));
+      els.langZhBtn.addEventListener("click", () => setLang("zh"));
+      els.langEnBtn.addEventListener("click", () => setLang("en"));
+      els.autoLangBtn.addEventListener("click", toggleAutoLang);
+
+      els.tabProblemBtn.addEventListener("click", () => setTab("problem"));
+      els.tabSolutionBtn.addEventListener("click", () => setTab("solution"));
+      els.tabAnimationBtn.addEventListener("click", () => setTab("animation"));
+
+      els.teacherModeBtn.addEventListener("click", () => {
+        teacherMode = !teacherMode;
+        applyTeacherMode();
+      });
+      els.nextStepBtn.addEventListener("click", showNextStep);
+
+      els.playBtn.addEventListener("click", play);
+      els.pauseBtn.addEventListener("click", pause);
+      els.resetBtn.addEventListener("click", () => {
+        pause();
+        setProgress(0);
+      });
+      els.toRatioBtn.addEventListener("click", () => setProgress(35));
+      els.toAreaBtn.addEventListener("click", () => setProgress(82));
+      els.progressSlider.addEventListener("input", () => {
+        pause();
+        setProgress(els.progressSlider.value);
+      });
+
+      setLang("ja");
+      setTab("problem");
+      applyTeacherMode();
+      setProgress(0);
+    })();
+  </script>
+</body>
+</html>
