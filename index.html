@@ -329,6 +329,144 @@
       color: #374151;
       margin: 6px 0;
     }
+
+    @media (max-width: 640px) {
+      html,
+      body {
+        overflow-x: hidden;
+      }
+
+      body {
+        padding: 12px;
+        place-items: start center;
+      }
+
+      .app {
+        width: 100%;
+        max-width: 100%;
+        border-radius: 12px;
+        box-shadow: 0 12px 24px rgba(15, 23, 42, 0.08);
+        overflow-x: clip;
+      }
+
+      .header {
+        padding: 14px 14px 10px;
+      }
+
+      .header h1 {
+        font-size: 18px;
+        line-height: 1.35;
+      }
+
+      .header p {
+        font-size: 13px;
+      }
+
+      .lang-row {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .lang-buttons {
+        width: 100%;
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .lang-btn,
+      .tab-btn,
+      .teacher-tools button,
+      .controls button {
+        min-height: 42px;
+        font-size: 14px;
+      }
+
+      .tabs {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 8px;
+        padding: 12px 14px 0;
+      }
+
+      .tab-btn {
+        width: 100%;
+        padding: 8px 6px;
+      }
+
+      .scene-wrap {
+        padding: 14px 14px 8px;
+      }
+
+      .panel {
+        padding: 10px 14px 16px;
+      }
+
+      .controls {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        align-items: stretch;
+        overflow-x: hidden;
+      }
+
+      .controls button {
+        flex: 1 1 100%;
+        min-width: 0;
+        white-space: normal;
+        line-height: 1.35;
+        padding: 10px 8px;
+      }
+
+      .slider-row {
+        grid-template-columns: 1fr;
+        gap: 6px;
+      }
+
+      input[type="range"] {
+        width: 100%;
+        max-width: 100%;
+      }
+
+      .stats {
+        grid-template-columns: 1fr;
+      }
+
+      .card b {
+        min-width: 84px;
+      }
+
+      .problem-wrap,
+      .solution-wrap {
+        padding: 10px 14px 16px;
+      }
+
+      .problem-card h3,
+      .solution-card h3 {
+        font-size: 15px;
+      }
+
+      .vocab {
+        padding: 0 14px 8px;
+      }
+
+      .foot {
+        padding: 0 14px 14px;
+      }
+    }
+
+    @media (max-width: 420px) {
+      .lang-buttons {
+        grid-template-columns: 1fr;
+      }
+
+      .tabs {
+        grid-template-columns: 1fr;
+      }
+
+      .vocab {
+        grid-template-columns: 1fr;
+      }
+    }
   </style>
 </head>
 <body>
