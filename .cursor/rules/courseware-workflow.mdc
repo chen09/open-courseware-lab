@@ -1,39 +1,20 @@
 ---
-description: Workflow rules for lesson authoring and release
+description: Single strict rule for correctness-first full automation
 alwaysApply: true
 ---
 
-# Open Courseware Lab Workflow
+# Open Courseware Lab: One Strict Rule
 
-## Project Goal
-- Build shareable multilingual interactive courseware across math/physics/chemistry.
-- Keep each problem as an independent lesson page under taxonomy paths.
-
-## Content Taxonomy (Required)
-- Store lessons at: `lessons/<subject>/<grade>/<topic>/<problem-slug>/`
-- Each lesson must include:
-  - `index.html`
-  - `meta.json`
-  - local assets in `assets/`
-- Use deploy-safe relative paths only (no local absolute filesystem paths).
-
-## Metadata and Catalog (Required)
-- Root homepage is a catalog page.
-- Catalog data comes from `lessons/manifest.json` (not hardcoded cards).
-- After adding/updating any `lessons/**/meta.json`, run:
-  - `node ./scripts/generate-lessons-manifest.mjs`
-- Ensure `lessons/manifest.json` is updated before release.
-
-## Release Flow (Required)
-- Use branch workflow: feature branch -> PR -> merge to `main`.
-- Respect protected main branch (no direct force push).
-- Deploy production from `main` with Cloudflare Pages:
-  - `npx wrangler pages deploy . --project-name open-courseware-lab --branch main`
-
-## QA Baseline Before Release
-- Verify root catalog renders cards and links to target lesson paths.
-- Verify lesson core interactions:
-  - tab switching
-  - teacher mode step reveal
-  - language switch + auto-rotate
-- Verify mobile behavior at least on 390px and 320px widths (no blocking overflow).
+- Correctness is the top priority for children-facing content; speed is secondary.
+- Default execution mode is strict and fully automated end-to-end: extract problem -> solve -> cross-validate -> implement lesson -> update taxonomy/manifest/index -> branch/PR/merge -> deploy.
+- Always use multiple independent validations before release:
+  - at least two distinct solving methods,
+  - consistency checks (units, boundary conditions, substitution),
+  - external references or alternative verification channels where available.
+- Spend additional time and tokens when needed; do not simplify validation to save cost.
+- Do not require human intervention unless the AI detects likely problem/answer errors or unresolved contradictions during validation.
+- Keep project conventions while executing automation:
+  - lesson path: `lessons/<subject>/<grade>/<topic>/<problem-slug>/`
+  - update `meta.json` and regenerate `lessons/manifest.json`
+  - ensure root catalog reflects new lesson entries
+  - release via PR flow to `main` and deploy Cloudflare Pages production.
