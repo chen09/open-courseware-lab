@@ -801,31 +801,64 @@ x = 20/3 hours = 6 h 40 min</div>
         document.body.style.padding = "0";
         document.body.style.background = "linear-gradient(180deg, #f8fafc 0%, #eef2ff 100%)";
 
-        const lessons = [
-          {
-            subject: "数学 / Math",
-            grade: "小学 / Elementary",
-            topic: "速度与路程 / Speed-Distance",
-            title: "太郎与次郎行走（追上与休息）",
-            path: "./lessons/math/elementary/speed-distance/jiro-taro-catchup-rest/",
-            tags: ["多语言", "老师模式", "动画时间轴"]
+        const labelMap = {
+          subject: {
+            math: "数学 / Math",
+            physics: "物理 / Physics",
+            chemistry: "化学 / Chemistry"
+          },
+          gradeBand: {
+            elementary: "小学 / Elementary",
+            middle: "初中 / Middle",
+            high: "高中 / High"
+          },
+          topic: {
+            "speed-distance": "速度与路程 / Speed-Distance"
+          },
+          feature: {
+            "tabs:problem-solution-animation": "题面/解法/动画",
+            "teacher-mode": "老师模式",
+            "multilingual:ja-zh-en": "多语言",
+            "auto-language-rotation": "自动语言轮播",
+            "timeline-animation": "动画时间轴"
           }
-        ];
+        };
 
-        const lessonCards = lessons
-          .map(
-            (lesson) => `
-            <article class="lesson-card">
-              <p class="meta">${lesson.subject} · ${lesson.grade} · ${lesson.topic}</p>
-              <h3>${lesson.title}</h3>
-              <div class="tag-row">${lesson.tags.map((t) => `<span>${t}</span>`).join("")}</div>
-              <a class="open-link" href="${lesson.path}">进入课件</a>
-            </article>
-          `
-          )
-          .join("");
+        function readLabel(group, key) {
+          if (!key) return "未分类";
+          const table = labelMap[group] || {};
+          return table[key] || key;
+        }
 
-        document.body.innerHTML = `
+        function normalizeLesson(lesson) {
+          const lessonPath = lesson.path || lesson.basePath || "./";
+          return {
+            title: (lesson.title && (lesson.title.zh || lesson.title.ja || lesson.title.en)) || lesson.id || "Untitled lesson",
+            subject: readLabel("subject", lesson.subject),
+            gradeBand: readLabel("gradeBand", lesson.gradeBand),
+            topic: readLabel("topic", lesson.topic),
+            tags: Array.isArray(lesson.features)
+              ? lesson.features.slice(0, 4).map((f) => readLabel("feature", f))
+              : ["课程"],
+            path: lessonPath.endsWith("/") ? lessonPath : `${lessonPath}/`
+          };
+        }
+
+        function renderCatalog(lessons) {
+          const lessonCards = lessons
+            .map(
+              (lesson) => `
+              <article class="lesson-card">
+                <p class="meta">${lesson.subject} · ${lesson.gradeBand} · ${lesson.topic}</p>
+                <h3>${lesson.title}</h3>
+                <div class="tag-row">${lesson.tags.map((t) => `<span>${t}</span>`).join("")}</div>
+                <a class="open-link" href="${lesson.path}">进入课件</a>
+              </article>
+            `
+            )
+            .join("");
+
+          document.body.innerHTML = `
           <style>
             .catalog-page {
               max-width: 980px;
@@ -921,6 +954,32 @@ x = 20/3 hours = 6 h 40 min</div>
             <section class="lesson-grid">${lessonCards}</section>
           </main>
         `;
+        }
+
+        const fallbackLessons = [
+          normalizeLesson({
+            title: { zh: "太郎与次郎行走（追上与休息）" },
+            subject: "math",
+            gradeBand: "elementary",
+            topic: "speed-distance",
+            features: ["multilingual:ja-zh-en", "teacher-mode", "timeline-animation"],
+            path: "./lessons/math/elementary/speed-distance/jiro-taro-catchup-rest/"
+          })
+        ];
+
+        fetch("./lessons/manifest.json", { cache: "no-store" })
+          .then((res) => {
+            if (!res.ok) throw new Error(`manifest status ${res.status}`);
+            return res.json();
+          })
+          .then((data) => {
+            const rawLessons = Array.isArray(data.lessons) ? data.lessons : [];
+            const normalized = rawLessons.map(normalizeLesson).filter((x) => Boolean(x.path));
+            renderCatalog(normalized.length ? normalized : fallbackLessons);
+          })
+          .catch(() => {
+            renderCatalog(fallbackLessons);
+          });
         return;
       }
 

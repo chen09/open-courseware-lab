@@ -47,3 +47,14 @@ Run a local static server from repository root:
 
 ```bash
 python3 -m http.server 8080
+```
+
+## Maintain catalog homepage
+
+The root homepage reads `lessons/manifest.json` and renders lesson cards automatically.
+
+When adding or updating lessons, regenerate the manifest before deployment:
+
+```bash
+node ./scripts/generate-lessons-manifest.mjs
+```
