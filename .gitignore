@@ -140,3 +140,8 @@ vite.config.ts.timestamp-*
 
 # Cloudflare Wrangler local state
 .wrangler/
+
+# Keep project rules in version control
+!.cursor/
+!.cursor/rules/
+!.cursor/rules/*.mdc
