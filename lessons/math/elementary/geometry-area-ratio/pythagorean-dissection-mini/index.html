@@ -4,6 +4,9 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Pythagorean Dissection Mini</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" />
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
   <style>
     :root {
       --bg: #f8fafc;
@@ -125,6 +128,34 @@
       color: #334155;
       font-size: 13px;
     }
+    .proof-map-grid {
+      display: grid;
+      grid-template-columns: minmax(280px, 1fr) minmax(280px, 1fr);
+      gap: 12px;
+      align-items: start;
+      margin-top: 8px;
+    }
+    .proof-formulas {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: #f8fafc;
+      padding: 10px 12px;
+      min-height: 100%;
+    }
+    .proof-formulas p {
+      margin: 0;
+      color: #475569;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+    .formula-line {
+      margin: 4px 0;
+      color: #0f172a;
+    }
+    .formula-line.final {
+      color: #166534;
+      font-weight: 700;
+    }
   </style>
 </head>
 <body>
@@ -156,8 +187,8 @@
         <div class="card">
           <b>方法B（面积方程）</b><br />
           同一个大正方形面积有两种表达：<br />
-          <b>(a+b)² = 4*(ab/2) + c²</b><br />
-          即 <b>a² + 2ab + b² = 2ab + c²</b>，约去 2ab 得 <b>a² + b² = c²</b>。
+          <b>\((a+b)^2 = 4\cdot\frac{ab}{2} + c^2\)</b><br />
+          即 <b>\(a^2 + 2ab + b^2 = 2ab + c^2\)</b>，约去 \(2ab\) 得 <b>\(a^2 + b^2 = c^2\)</b>。
         </div>
       </div>
     </section>
@@ -178,31 +209,34 @@
 
       <div class="card" style="margin-top:10px;">
         <b>Proof Map（静态标注版）</b>
-        <svg viewBox="0 0 900 300" aria-label="pythagorean proof map">
-          <text x="24" y="24" font-size="14" fill="#334155">关键标注：边长、三角形面积、中心 c²、外框 (a+b)²</text>
-          <rect x="70" y="56" width="168" height="168" fill="#ffffff" stroke="#94a3b8" stroke-width="2" />
-          <polygon points="70,56 142,56 70,152" fill="#bfdbfe" stroke="#1d4ed8" stroke-width="1.5" />
-          <polygon points="238,56 238,128 142,56" fill="#bfdbfe" stroke="#1d4ed8" stroke-width="1.5" />
-          <polygon points="238,224 166,224 238,128" fill="#bfdbfe" stroke="#1d4ed8" stroke-width="1.5" />
-          <polygon points="70,224 70,152 166,224" fill="#bfdbfe" stroke="#1d4ed8" stroke-width="1.5" />
-          <polygon points="142,56 238,128 166,224 70,152" fill="#bbf7d0" stroke="#166534" stroke-width="2" />
+        <div class="proof-map-grid">
+          <svg viewBox="0 0 320 280" aria-label="pythagorean proof map">
+            <text x="16" y="24" font-size="13" fill="#334155">关键标注：边长、三角形面积、中心 c²、外框 (a+b)²</text>
+            <rect x="52" y="56" width="168" height="168" fill="#ffffff" stroke="#94a3b8" stroke-width="2" />
+            <polygon points="52,56 124,56 52,152" fill="#bfdbfe" stroke="#1d4ed8" stroke-width="1.5" />
+            <polygon points="220,56 220,128 124,56" fill="#bfdbfe" stroke="#1d4ed8" stroke-width="1.5" />
+            <polygon points="220,224 148,224 220,128" fill="#bfdbfe" stroke="#1d4ed8" stroke-width="1.5" />
+            <polygon points="52,224 52,152 148,224" fill="#bfdbfe" stroke="#1d4ed8" stroke-width="1.5" />
+            <polygon points="124,56 220,128 148,224 52,152" fill="#bbf7d0" stroke="#166534" stroke-width="2" />
 
-          <text x="95" y="48" font-size="12" fill="#475569">a</text>
-          <text x="188" y="48" font-size="12" fill="#475569">b</text>
-          <text x="246" y="98" font-size="12" fill="#475569">a</text>
-          <text x="246" y="190" font-size="12" fill="#475569">b</text>
-          <text x="130" y="150" font-size="14" fill="#166534">c²</text>
-          <text x="76" y="112" font-size="12" fill="#1d4ed8">ab/2</text>
-          <text x="198" y="98" font-size="12" fill="#1d4ed8">ab/2</text>
-          <text x="198" y="198" font-size="12" fill="#1d4ed8">ab/2</text>
-          <text x="76" y="198" font-size="12" fill="#1d4ed8">ab/2</text>
-          <text x="78" y="244" font-size="13" fill="#334155">(a+b)²</text>
-
-          <text x="340" y="72" font-size="16" fill="#1e293b">(a+b)² = 4*(ab/2) + c²</text>
-          <text x="340" y="106" font-size="16" fill="#1e293b">a² + 2ab + b² = 2ab + c²</text>
-          <text x="340" y="142" font-size="20" fill="#166534">a² + b² = c²</text>
-          <text x="340" y="182" font-size="13" fill="#475569">注：这是“通用证明结构”，不是只针对 3-4-5 的凑数。</text>
-        </svg>
+            <text x="77" y="48" font-size="12" fill="#475569">a</text>
+            <text x="170" y="48" font-size="12" fill="#475569">b</text>
+            <text x="228" y="98" font-size="12" fill="#475569">a</text>
+            <text x="228" y="190" font-size="12" fill="#475569">b</text>
+            <text x="112" y="150" font-size="14" fill="#166534">c²</text>
+            <text x="58" y="112" font-size="12" fill="#1d4ed8">ab/2</text>
+            <text x="180" y="98" font-size="12" fill="#1d4ed8">ab/2</text>
+            <text x="180" y="198" font-size="12" fill="#1d4ed8">ab/2</text>
+            <text x="58" y="198" font-size="12" fill="#1d4ed8">ab/2</text>
+            <text x="60" y="244" font-size="13" fill="#334155">(a+b)²</text>
+          </svg>
+          <div class="proof-formulas">
+            <div class="formula-line">\[(a+b)^2 = 4\cdot\frac{ab}{2} + c^2\]</div>
+            <div class="formula-line">\[a^2 + 2ab + b^2 = 2ab + c^2\]</div>
+            <div class="formula-line final">\[a^2 + b^2 = c^2\]</div>
+            <p>注：这是“通用证明结构”，不是只针对 3-4-5 的凑数。</p>
+          </div>
+        </div>
       </div>
     </section>
 
@@ -227,6 +261,16 @@
           });
         });
       });
+
+      if (window.renderMathInElement) {
+        window.renderMathInElement(document.body, {
+          delimiters: [
+            { left: "\\(", right: "\\)", display: false },
+            { left: "\\[", right: "\\]", display: true }
+          ],
+          throwOnError: false
+        });
+      }
 
     })();
   </script>
