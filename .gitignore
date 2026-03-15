@@ -141,7 +141,20 @@ vite.config.ts.timestamp-*
 # Cloudflare Wrangler local state
 .wrangler/
 
+# Python virtual environments
+.venv/
+venv/
+
+# Manim local render/cache outputs
+**/assets/explain/manim/media/
+**/assets/explain/manim/__pycache__/
+**/assets/explain/frame-*.png
+**/assets/explain/qc-frames/
+**/assets/explain/qc-report.md
+
 # Keep project rules in version control
 !.cursor/
 !.cursor/rules/
 !.cursor/rules/*.mdc
+!.cursor/skills/
+!.cursor/skills/**/SKILL.md

@@ -1,0 +1,47 @@
+{
+  "video": "assets/explain/scene-01.mp4",
+  "checkpoints": [
+    {
+      "id": "top-layout-clean",
+      "time": "00:00:03.800",
+      "description": "Top area clean: no overlap among title/(a+b)^2/edge labels.",
+      "mcp_prompt": "Check whether there is any overlap or crowding in the top area, especially around (a+b)^2 and the top edge labels."
+    },
+    {
+      "id": "outer-mapping-ghost",
+      "time": "00:00:05.500",
+      "description": "(a+b)^2 uses ghost movement to equation; no arrow-style mapping for this term.",
+      "mcp_prompt": "Verify mapping style for (a+b)^2: should be ghost transform, not an arrow."
+    },
+    {
+      "id": "geometry-integrity",
+      "time": "00:00:07.300",
+      "description": "Outer and center shapes appear square; right triangles look right-angled; labels a/b appear on top and vertical edges.",
+      "mcp_prompt": "Check geometry correctness: square integrity, right-triangle structure, and a/b label completeness on top and vertical sides."
+    },
+    {
+      "id": "no-protruding-marker",
+      "time": "00:00:08.100",
+      "description": "No stray/protruding green marker outside the big square.",
+      "mcp_prompt": "Check for accidental artifacts or protruding marker lines outside the main square."
+    },
+    {
+      "id": "triangle-gather-motion",
+      "time": "00:00:11.800",
+      "description": "Four triangle ghosts gather simultaneously to 4·ab/2 (not one-by-one arrows).",
+      "mcp_prompt": "Verify the four triangle areas aggregate with simultaneous ghost movement, and no one-by-one arrow sequence is used."
+    },
+    {
+      "id": "c2-order-and-motion",
+      "time": "00:00:13.600",
+      "description": "After triangle gather, center c^2 square flashes then center square ghost moves to equation c^2.",
+      "mcp_prompt": "Check narrative order: triangles first, then c^2. Confirm c^2 mapping uses center square ghost movement, not text-only movement."
+    },
+    {
+      "id": "subtitle-safe-zone",
+      "time": "00:00:18.000",
+      "description": "Formula and geometry stay above subtitle-safe area; no subtitle occlusion with key math content.",
+      "mcp_prompt": "Evaluate whether key visual content remains clear above subtitle-safe zone without major overlap."
+    }
+  ]
+}

@@ -1,0 +1,37 @@
+---
+description: QA gate for Manim visual-proof lessons (layout, sequence, VTT)
+globs: lessons/**/{index.html,meta.json,assets/explain/scene-*.vtt,assets/explain/manim/*.py}
+alwaysApply: false
+---
+
+# Manim Visual Proof QA Gate
+
+- Treat child-facing correctness and clarity as release blockers.
+- Keep one concept -> one mapping style per segment:
+  - `(a+b)^2`, `4·ab/2`, `c^2` should each use consistent motion language (ghost transform preferred over mixed arrows).
+- Enforce story order explicitly in code comments and animation sequence:
+  - source highlight -> movement/aggregation -> formula landing.
+- Never allow overlap with unsafe zones:
+  - title area, subtitle/caption area, and equation blocks must stay visually separated.
+- Require geometry integrity checks before render publish:
+  - outer is true square, center is true `c^2` square, right triangles are right triangles, labels `a/b/c` are complete on needed edges.
+- Subtitle (VTT) must match current animation semantics and timing:
+  - wording matches current motion type,
+  - cue boundaries align with visible beats,
+  - last cue ends at or after measured video duration.
+- Self-review is mandatory before handoff:
+  - extract and inspect key frames for early/mid/late timeline,
+  - verify no accidental artifacts (stray lines, protruding markers, duplicate labels).
+- Cross-file consistency before release:
+  - `index.html` video/track paths valid,
+  - fallback text is truthful (error-state wording only),
+  - `meta.json` assets/features match real files,
+  - `lessons/manifest.json` entry exists and points to lesson path.
+- Mandatory release gate:
+  - run `python scripts/extract-animation-checkframes.py <lesson-dir> --profile assets/explain/qc-checkpoints.json`,
+  - inspect `assets/explain/qc-report.md` and associated frames,
+  - run `python scripts/validate-manim-lesson.py <lesson-dir>`,
+  - fix all reported errors before considering the lesson publish-ready.
+- Execution ownership:
+  - after every animation edit, the agent should execute the QA commands directly and report results,
+  - do not rely on the user to run validation manually unless blocked by permissions/environment constraints.

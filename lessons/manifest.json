@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-03-14T14:26:43.413Z",
-  "count": 2,
+  "generatedAt": "2026-03-15T12:18:23.747Z",
+  "count": 3,
   "lessons": [
     {
       "id": "math-el-geometry-area-ratio-parallelogram-diagonal-ratio",
@@ -25,6 +25,31 @@
       "entry": "index.html",
       "assets": [
         "assets/problem-photo-processed.png"
+      ]
+    },
+    {
+      "id": "math-el-geometry-area-ratio-pythagorean-dissection-mini",
+      "title": {
+        "ja": "ピタゴラスの定理（最小分割デモ）",
+        "zh": "勾股定理（最小重排演示）",
+        "en": "Pythagorean Theorem (Minimal Dissection Demo)"
+      },
+      "subject": "math",
+      "gradeBand": "elementary",
+      "topic": "geometry-area-ratio",
+      "slug": "pythagorean-dissection-mini",
+      "features": [
+        "tabs:problem-solution-animation",
+        "timeline-animation",
+        "manim-explainer-slot",
+        "cross-validation-matrix"
+      ],
+      "path": "./lessons/math/elementary/geometry-area-ratio/pythagorean-dissection-mini/",
+      "entry": "index.html",
+      "assets": [
+        "assets/explain/scene-01.mp4",
+        "assets/explain/scene-01.poster.webp",
+        "assets/explain/scene-01.vtt"
       ]
     },
     {

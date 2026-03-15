@@ -1,0 +1,23 @@
+---
+description: Manim integration rules for lesson pages and metadata
+globs: lessons/**/{index.html,meta.json}
+alwaysApply: false
+---
+
+# Lesson Manim Integration Rules
+
+- Keep interactive lesson structure intact: `Problem / Solution / Animation` remains the primary learning shell.
+- Use Manim assets only when they explain a bottleneck step better than SVG/JS animation.
+- Store explain assets under `assets/explain/` and use scene-based naming:
+  - `scene-01.mp4`
+  - `scene-01.poster.webp`
+  - `scene-01.vtt` (captions)
+- Require consistency checks before release:
+  - final numeric/ratio conclusions match `Solution` section exactly,
+  - terms and symbols are consistent across multilingual text and captions,
+  - cross-validation outputs do not contradict explainer claims.
+- If `meta.json` is updated, keep feature tags truthful; do not claim Manim usage unless assets are present.
+- Minimum acceptance for each added explainer scene:
+  - one clear objective sentence,
+  - one linked step in solution logic,
+  - one fallback path when video cannot load.

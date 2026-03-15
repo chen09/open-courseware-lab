@@ -1,0 +1,15 @@
+---
+description: Hybrid explainer strategy for web lessons and Manim
+alwaysApply: true
+---
+
+# Hybrid Explainer Strategy
+
+- Do not fully replace interactive web lessons with video-only content.
+- Choose explainer mode by learning objective:
+  - Use web-first when learners must control pace (slider, teacher mode, step reveal, language switch).
+  - Use Manim-first when core value is abstract intuition through continuous geometric/algebraic transformation.
+  - Use hybrid by default: short Manim segments for hard intuition, web UI for verification and interaction.
+- Keep learner-facing conclusions consistent across all channels (video, solution text, validation matrix).
+- Prefer reversible architecture decisions: add Manim as an asset layer, not as a platform replacement.
+- For children-facing content, prioritize correctness and clarity over visual complexity.

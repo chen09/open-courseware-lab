@@ -1,0 +1,24 @@
+{
+  "id": "math-el-geometry-area-ratio-pythagorean-dissection-mini",
+  "title": {
+    "ja": "ピタゴラスの定理（最小分割デモ）",
+    "zh": "勾股定理（最小重排演示）",
+    "en": "Pythagorean Theorem (Minimal Dissection Demo)"
+  },
+  "subject": "math",
+  "gradeBand": "elementary",
+  "topic": "geometry-area-ratio",
+  "slug": "pythagorean-dissection-mini",
+  "entry": "index.html",
+  "assets": [
+    "assets/explain/scene-01.mp4",
+    "assets/explain/scene-01.poster.webp",
+    "assets/explain/scene-01.vtt"
+  ],
+  "features": [
+    "tabs:problem-solution-animation",
+    "timeline-animation",
+    "manim-explainer-slot",
+    "cross-validation-matrix"
+  ]
+}
