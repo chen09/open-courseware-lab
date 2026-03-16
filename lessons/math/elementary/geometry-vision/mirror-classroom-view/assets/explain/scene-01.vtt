@@ -1,13 +1,17 @@
 WEBVTT
 
-00:00:00.000 --> 00:00:04.000
-Mirror geometry demo.
-Green X is fixed because mirror length for full-body view is half of 150 cm.
+00:00:00.000 --> 00:00:03.600
+Mirror classroom setup:
+rear wall, mirror, and viewer eye point.
 
-00:00:04.000 --> 00:00:08.000
-As the viewer moves backward, d increases.
-Blue Y grows following Y = 3d/(d+8).
+00:00:03.600 --> 00:00:07.800
+Green X is fixed at 75 cm.
+Blue Y follows Y(d)=3d/(d+8) m.
 
-00:00:08.000 --> 00:00:12.000
-At d = 2 m, Y = 60 cm.
-Conclusion: X stays constant, Y increases with d.
+00:00:07.800 --> 00:00:12.600
+Move backward: d increases.
+Dashed sight rays show why Y increases while X stays fixed.
+
+00:00:12.600 --> 00:00:14.600
+Conclusion:
+X is constant, Y increases with d.
