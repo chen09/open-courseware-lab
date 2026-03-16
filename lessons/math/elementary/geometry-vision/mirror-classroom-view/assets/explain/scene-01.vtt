@@ -1,17 +1,16 @@
 WEBVTT
 
 00:00:00.000 --> 00:00:03.600
-Mirror classroom setup:
-rear wall, mirror, and viewer eye point.
+先看场景：左边是后墙，右边是镜子，红点是眼睛位置。
 
 00:00:03.600 --> 00:00:07.800
-Green X is fixed at 75 cm.
-Blue Y follows Y(d)=3d/(d+8) m.
+绿色 X 固定在 75 厘米。
+蓝色 Y 满足：Y(d)=3d/(d+8) 米。
 
 00:00:07.800 --> 00:00:12.600
-Move backward: d increases.
-Dashed sight rays show why Y increases while X stays fixed.
+向后退时，d 变大。
+虚线视线说明：Y 会变大，而 X 保持不变。
 
 00:00:12.600 --> 00:00:15.500
-Conclusion:
-X is constant, Y increases with d.
+结论：
+X 固定，Y 随距离 d 增加而增加。
