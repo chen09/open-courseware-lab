@@ -51,10 +51,11 @@ class Scene01MirrorClassroom(ThreeDScene):
             y_m = 3.0 * d_tracker.get_value() / (d_tracker.get_value() + room_depth)
             return y_m * px_per_m
 
+        y_offset = 0.08
         y_segment = always_redraw(
             lambda: Line(
-                [mirror_x, eye_y - 0.25, 0],
-                [mirror_x, eye_y - 0.25 + y_len(), 0],
+                [mirror_x, eye_y - y_offset, 0],
+                [mirror_x, eye_y - y_offset - y_len(), 0],
                 color="#60a5fa",
                 stroke_width=11,
             )
@@ -85,7 +86,7 @@ class Scene01MirrorClassroom(ThreeDScene):
         ray_y_top = always_redraw(
             lambda: DashedLine(
                 [eye_x(), eye_y, 0],
-                [mirror_x, eye_y - 0.25 + y_len(), 0],
+                [mirror_x, eye_y - y_offset, 0],
                 color="#60a5fa",
                 dash_length=0.12,
             )
@@ -93,7 +94,7 @@ class Scene01MirrorClassroom(ThreeDScene):
         ray_y_bottom = always_redraw(
             lambda: DashedLine(
                 [eye_x(), eye_y, 0],
-                [mirror_x, eye_y - 0.25, 0],
+                [mirror_x, eye_y - y_offset - y_len(), 0],
                 color="#60a5fa",
                 dash_length=0.12,
             )
@@ -129,7 +130,7 @@ class Scene01MirrorClassroom(ThreeDScene):
         self.play(FadeIn(formula_box), Write(f1), Write(f2), run_time=1.0)
         self.wait(0.4)
 
-        self.play(d_tracker.animate.set_value(6.0), run_time=4.5, rate_func=linear)
+        self.play(d_tracker.animate.set_value(7.8), run_time=5.2, rate_func=linear)
         self.wait(0.6)
-        self.play(d_tracker.animate.set_value(2.0), run_time=2.3, rate_func=smooth)
-        self.wait(0.8)
+        self.play(d_tracker.animate.set_value(2.0), run_time=2.8, rate_func=smooth)
+        self.wait(0.6)
