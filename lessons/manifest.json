@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-03-15T12:18:23.747Z",
-  "count": 3,
+  "generatedAt": "2026-03-16T09:16:57.193Z",
+  "count": 4,
   "lessons": [
     {
       "id": "math-el-geometry-area-ratio-parallelogram-diagonal-ratio",
@@ -47,6 +47,35 @@
       "path": "./lessons/math/elementary/geometry-area-ratio/pythagorean-dissection-mini/",
       "entry": "index.html",
       "assets": [
+        "assets/explain/scene-01.mp4",
+        "assets/explain/scene-01.poster.webp",
+        "assets/explain/scene-01.vtt"
+      ]
+    },
+    {
+      "id": "math-el-geometry-vision-mirror-classroom-view",
+      "title": {
+        "ja": "鏡に映る教室（X・Yの変化）",
+        "zh": "镜中教室（X、Y变化）",
+        "en": "Classroom in a Mirror (X/Y Change)"
+      },
+      "subject": "math",
+      "gradeBand": "elementary",
+      "topic": "geometry-vision",
+      "slug": "mirror-classroom-view",
+      "features": [
+        "tabs:problem-solution-animation",
+        "teacher-mode",
+        "multilingual:ja-zh-en",
+        "auto-language-rotation",
+        "timeline-animation",
+        "manim-explainer-slot",
+        "cross-validation-matrix"
+      ],
+      "path": "./lessons/math/elementary/geometry-vision/mirror-classroom-view/",
+      "entry": "index.html",
+      "assets": [
+        "assets/problem-photo-processed.png",
         "assets/explain/scene-01.mp4",
         "assets/explain/scene-01.poster.webp",
         "assets/explain/scene-01.vtt"
