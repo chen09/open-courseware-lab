@@ -241,10 +241,8 @@
 
     <section id="panel-solution" class="panel hidden">
       <div class="teacher-tools">
-        <button id="teacher-toggle" class="btn">Teacher Mode</button>
-        <button id="prev-step" class="btn">Prev</button>
-        <button id="next-step" class="btn">Next</button>
-        <span id="step-indicator" class="badge">Step 0/5</span>
+        <button id="teacher-toggle" class="btn">老师模式 OFF</button>
+        <button id="next-step" class="btn hidden">显示下一步</button>
       </div>
 
       <div class="card step" data-step="1">
@@ -360,6 +358,11 @@
             <circle id="eye-dot" cx="470" cy="145" r="7" fill="#dc2626" />
             <text id="eye-label" x="480" y="140" fill="#991b1b" font-size="13">eye</text>
 
+            <line id="ray-x-top" x1="470" y1="145" x2="600" y2="108" stroke="#16a34a" stroke-width="2.2" stroke-dasharray="7 5" opacity="0.9" />
+            <line id="ray-x-bottom" x1="470" y1="145" x2="600" y2="170" stroke="#16a34a" stroke-width="2.2" stroke-dasharray="7 5" opacity="0.9" />
+            <line id="ray-y-top" x1="470" y1="145" x2="600" y2="150" stroke="#2563eb" stroke-width="2" stroke-dasharray="5 5" opacity="0.85" />
+            <line id="ray-y-bottom" x1="470" y1="145" x2="600" y2="200" stroke="#2563eb" stroke-width="2" stroke-dasharray="5 5" opacity="0.85" />
+
             <line id="x-seg" x1="600" y1="108" x2="600" y2="170" stroke="#16a34a" stroke-width="8" />
             <text id="x-label" x="612" y="142" fill="#166534" font-size="13">X</text>
 
@@ -438,6 +441,7 @@
           }
         });
         renderMathDeferred();
+        renderSteps();
       }
 
       function renderMathDeferred(retry) {
@@ -489,42 +493,64 @@
 
       const stepBlocks = Array.from(document.querySelectorAll(".step"));
       const teacherToggle = document.getElementById("teacher-toggle");
-      const prevStep = document.getElementById("prev-step");
       const nextStep = document.getElementById("next-step");
-      const stepIndicator = document.getElementById("step-indicator");
       let teacherMode = false;
-      let step = 0;
+      let step = stepBlocks.length;
+
+      function teacherCopy() {
+        if (lang === "ja") {
+          return {
+            off: "先生モード OFF",
+            on: "先生モード ON",
+            next: "次のステップを表示",
+            done: "すべて表示済み"
+          };
+        }
+        if (lang === "en") {
+          return {
+            off: "Teacher Mode OFF",
+            on: "Teacher Mode ON",
+            next: "Show next step",
+            done: "All steps shown"
+          };
+        }
+        return {
+          off: "老师模式 OFF",
+          on: "老师模式 ON",
+          next: "显示下一步",
+          done: "已显示全部步骤"
+        };
+      }
 
       function renderSteps() {
         stepBlocks.forEach((el) => {
           const n = Number(el.getAttribute("data-step"));
           el.classList.toggle("hidden", teacherMode && n > step);
         });
-        stepIndicator.textContent = "Step " + step + "/" + stepBlocks.length;
+        const tx = teacherCopy();
+        teacherToggle.classList.toggle("active", teacherMode);
+        teacherToggle.textContent = teacherMode ? tx.on : tx.off;
+        nextStep.classList.toggle("hidden", !teacherMode);
+        nextStep.textContent = step >= stepBlocks.length ? tx.done : tx.next;
       }
 
       teacherToggle.addEventListener("click", () => {
         teacherMode = !teacherMode;
-        teacherToggle.classList.toggle("active", teacherMode);
         if (!teacherMode) {
           step = stepBlocks.length;
-        } else if (step === 0) {
+        } else {
           step = 1;
         }
         renderSteps();
       });
 
-      prevStep.addEventListener("click", () => {
-        if (!teacherMode) return;
-        step = Math.max(1, step - 1);
-        renderSteps();
-      });
       nextStep.addEventListener("click", () => {
         if (!teacherMode) return;
-        step = Math.min(stepBlocks.length, step + 1);
+        if (step < stepBlocks.length) {
+          step += 1;
+        }
         renderSteps();
       });
-      step = stepBlocks.length;
       renderSteps();
 
       const slider = document.getElementById("d-slider");
@@ -534,6 +560,10 @@
       const resetDemo = document.getElementById("reset-demo");
       const eyeDot = document.getElementById("eye-dot");
       const eyeLabel = document.getElementById("eye-label");
+      const rayXTop = document.getElementById("ray-x-top");
+      const rayXBottom = document.getElementById("ray-x-bottom");
+      const rayYTop = document.getElementById("ray-y-top");
+      const rayYBottom = document.getElementById("ray-y-bottom");
       const xSeg = document.getElementById("x-seg");
       const ySeg = document.getElementById("y-seg");
       const xLabel = document.getElementById("x-label");
@@ -576,6 +606,26 @@
         ySeg.setAttribute("y2", yBottom.toFixed(1));
         yLabel.setAttribute("y", ((yTop + yBottom) / 2).toFixed(1));
         yLabel.textContent = "Y=" + Ycm.toFixed(1) + "cm";
+
+        rayXTop.setAttribute("x1", eyeX.toFixed(1));
+        rayXTop.setAttribute("y1", eyeY.toFixed(1));
+        rayXTop.setAttribute("x2", mirrorX.toFixed(1));
+        rayXTop.setAttribute("y2", xTop.toFixed(1));
+
+        rayXBottom.setAttribute("x1", eyeX.toFixed(1));
+        rayXBottom.setAttribute("y1", eyeY.toFixed(1));
+        rayXBottom.setAttribute("x2", mirrorX.toFixed(1));
+        rayXBottom.setAttribute("y2", xBottom.toFixed(1));
+
+        rayYTop.setAttribute("x1", eyeX.toFixed(1));
+        rayYTop.setAttribute("y1", eyeY.toFixed(1));
+        rayYTop.setAttribute("x2", mirrorX.toFixed(1));
+        rayYTop.setAttribute("y2", yTop.toFixed(1));
+
+        rayYBottom.setAttribute("x1", eyeX.toFixed(1));
+        rayYBottom.setAttribute("y1", eyeY.toFixed(1));
+        rayYBottom.setAttribute("x2", mirrorX.toFixed(1));
+        rayYBottom.setAttribute("y2", yBottom.toFixed(1));
 
         distanceLine.setAttribute("x1", mirrorX.toFixed(1));
         distanceLine.setAttribute("x2", eyeX.toFixed(1));
