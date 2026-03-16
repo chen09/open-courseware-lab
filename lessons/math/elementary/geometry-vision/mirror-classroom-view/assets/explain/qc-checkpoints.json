@@ -1,0 +1,23 @@
+{
+  "video": "assets/explain/scene-01.mp4",
+  "checkpoints": [
+    {
+      "id": "frame-early",
+      "time": "00:00:01.000",
+      "description": "Poster-style layout visible with title and mirror bands",
+      "mcp_prompt": "Confirm title text and three horizontal bands are visible."
+    },
+    {
+      "id": "frame-mid",
+      "time": "00:00:04.000",
+      "description": "Middle stage frame remains readable",
+      "mcp_prompt": "Confirm center panel remains legible without clipping."
+    },
+    {
+      "id": "frame-late",
+      "time": "00:00:07.000",
+      "description": "Final frame still stable and not blank",
+      "mcp_prompt": "Confirm final frame preserves the same structure."
+    }
+  ]
+}
