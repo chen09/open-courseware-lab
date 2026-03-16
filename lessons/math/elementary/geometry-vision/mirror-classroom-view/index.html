@@ -136,6 +136,12 @@
       gap: 10px;
       align-items: center;
     }
+    .mini-actions {
+      margin-top: 8px;
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
     input[type="range"] { width: 100%; min-width: 0; accent-color: #111827; }
     .badge {
       display: inline-block;
@@ -158,6 +164,19 @@
     .refs a:hover { text-decoration: underline; }
     .i18n { margin: 4px 0; }
     .muted { color: var(--muted); }
+    .guide {
+      border: 1px solid #dbeafe;
+      border-radius: 10px;
+      background: #eff6ff;
+      padding: 8px 10px;
+      font-size: 13px;
+      line-height: 1.5;
+      color: #1e3a8a;
+    }
+    .math-line {
+      margin: 4px 0;
+      font-size: 15px;
+    }
     @media (max-width: 860px) {
       .grid { grid-template-columns: 1fr; }
     }
@@ -196,6 +215,9 @@
         <div class="i18n" data-ja="条件整理：鏡までの距離 \(d=2\mathrm{m}\)、後ろの壁は鏡から \(8\mathrm{m}\)、教室高 \(3\mathrm{m}\)、身長 \(150\mathrm{cm}\)。"
           data-zh="条件：人到镜子 \(d=2\mathrm{m}\)，后墙到镜子 \(8\mathrm{m}\)，教室高 \(3\mathrm{m}\)，身高 \(150\mathrm{cm}\)。"
           data-en="Given: person-to-mirror distance \(d=2\mathrm{m}\), rear wall at \(8\mathrm{m}\) from mirror, room height \(3\mathrm{m}\), person height \(150\mathrm{cm}\)."></div>
+        <div class="guide i18n" data-ja="見る順番：① Solutionで(5)〜(9)を確認 ② Animationでスライダーを動かす ③ Xは固定、Yだけ増えることを観察。"
+          data-zh="建议顺序：① 先看Solution的(5)~(9) ② 到Animation拖动滑块 ③ 观察X不变、Y变大。"
+          data-en="Suggested order: (1) read all answers in Solution, (2) move the slider in Animation, (3) observe X stays fixed while Y grows."></div>
       </div>
       <div class="card">
         <h3 class="i18n" data-ja="出題（日本語原文再構成）" data-zh="题目（按原文重构）" data-en="Problem text (reconstructed)"></h3>
@@ -248,7 +270,10 @@
         <div class="i18n" data-ja="後ろの壁（高さ3m, 鏡から8m）の鏡像は鏡の後ろ8m。目から見ると、鏡面切片比は \(d:(d+8)\)。"
           data-zh="后墙高3m、距镜8m；其虚像在镜后8m。镜面上的对应长度按相似比 \(d:(d+8)\) 缩放。"
           data-en="Rear wall (3 m high, 8 m from mirror) has virtual image 8 m behind mirror. Mirror segment uses similar-triangle ratio \(d:(d+8)\)."></div>
-        <div class="formula">\(Y=\frac{d}{d+8}\times3\mathrm{m}\)\n当 \(d=2\): \(Y=\frac{2}{10}\times3=0.6\mathrm{m}=60\mathrm{cm}\)</div>
+        <div class="formula">
+          <div class="math-line">\(Y=\frac{d}{d+8}\times3\mathrm{m}\)</div>
+          <div class="math-line">\(d=2\Rightarrow Y=\frac{2}{10}\times3=0.6\mathrm{m}=60\mathrm{cm}\)</div>
+        </div>
         <div class="ok">Answer (7): \(Y=60\mathrm{cm}\)</div>
       </div>
 
@@ -263,7 +288,10 @@
 
       <div class="card step" data-step="5">
         <h3>(9) 後ろへ下がるときの変化 / Change while moving backward</h3>
-        <div class="formula">\(X(d)=\frac{150}{2}=75\mathrm{cm}\)（一定）\n\(Y(d)=\frac{3d}{d+8}\mathrm{m}\)（\(d\) とともに単調増加）</div>
+        <div class="formula">
+          <div class="math-line">\(X(d)=\frac{150}{2}=75\mathrm{cm}\)（一定）</div>
+          <div class="math-line">\(Y(d)=\frac{3d}{d+8}\mathrm{m}\)（\(d\) とともに単調増加）</div>
+        </div>
         <div class="i18n" data-ja="したがって、後ろへ下がるほどYは大きくなるが、Xは常に一定。"
           data-zh="所以：向后退时Y变大；X始终不变。"
           data-en="Therefore: moving backward increases Y, while X remains constant."></div>
@@ -351,18 +379,25 @@
             <input id="d-slider" type="range" min="1" max="7.8" step="0.1" value="2" />
             <span id="d-value">d = 2.0 m</span>
           </div>
+          <div class="mini-actions">
+            <button id="play-demo" class="btn">Play demo</button>
+            <button id="reset-demo" class="btn">Reset d=2</button>
+          </div>
+          <div class="guide i18n" data-ja="操作ポイント：スライダーを右へ動かすと後ろへ下がる。緑Xは固定、青Yだけ伸びる。"
+            data-zh="操作提示：滑块向右=人向后退。绿色X固定，蓝色Y会变长。"
+            data-en="How to use: moving slider right means walking backward. Green X stays fixed, blue Y gets longer."></div>
           <div id="kpi" class="muted"></div>
         </div>
 
         <div class="card">
-          <h3 class="i18n" data-ja="動画スロット（検証用）" data-zh="视频槽位（校验用）" data-en="Video slot (for validation)"></h3>
+          <h3 class="i18n" data-ja="動画（概念デモ）" data-zh="视频（概念演示）" data-en="Video (concept demo)"></h3>
           <video controls poster="./assets/explain/scene-01.poster.webp">
             <source src="./assets/explain/scene-01.mp4" type="video/mp4" />
             <track kind="captions" src="./assets/explain/scene-01.vtt" srclang="en" label="English" />
           </video>
-          <p class="muted i18n" data-ja="この動画は配信パッケージ整合性チェック用の最小デモ。概念検証は左側インタラクティブ図で行う。"
-            data-zh="该视频用于发布包一致性校验；概念演示以左侧交互图为主。"
-            data-en="This video is a minimal validation asset for release packaging; concept demo is primarily the interactive diagram on the left."></p>
+          <p class="muted i18n" data-ja="この動画は d が増えると Y が増え、X は一定のままという流れを短く示す。"
+            data-zh="这个视频短演示“d增大时Y增大，而X保持不变”。"
+            data-en="This short video shows the key trend: as d increases, Y increases while X remains constant."></p>
         </div>
       </div>
     </section>
@@ -391,6 +426,7 @@
       const i18nNodes = Array.from(document.querySelectorAll(".i18n"));
       let lang = "ja";
       let autoTimer = null;
+      let demoTimer = null;
 
       function setLanguage(nextLang) {
         lang = nextLang;
@@ -401,6 +437,11 @@
             el.innerHTML = text;
           }
         });
+        renderMathDeferred();
+      }
+
+      function renderMathDeferred(retry) {
+        const remain = Number.isFinite(retry) ? retry : 10;
         if (window.renderMathInElement) {
           window.renderMathInElement(document.body, {
             delimiters: [
@@ -409,6 +450,10 @@
             ],
             throwOnError: false
           });
+          return;
+        }
+        if (remain > 0) {
+          setTimeout(() => renderMathDeferred(remain - 1), 120);
         }
       }
 
@@ -485,6 +530,8 @@
       const slider = document.getElementById("d-slider");
       const dValue = document.getElementById("d-value");
       const kpi = document.getElementById("kpi");
+      const playDemo = document.getElementById("play-demo");
+      const resetDemo = document.getElementById("reset-demo");
       const eyeDot = document.getElementById("eye-dot");
       const eyeLabel = document.getElementById("eye-label");
       const xSeg = document.getElementById("x-seg");
@@ -543,9 +590,36 @@
           "direct/mirror wall apparent-height ratio = <b>" + directVsMirror.toFixed(3) + "</b>";
       }
       slider.addEventListener("input", renderGeometry);
+      playDemo.addEventListener("click", () => {
+        if (demoTimer) {
+          clearInterval(demoTimer);
+          demoTimer = null;
+          playDemo.textContent = "Play demo";
+          return;
+        }
+        playDemo.textContent = "Pause demo";
+        demoTimer = setInterval(() => {
+          const cur = Number(slider.value);
+          const next = cur + 0.08;
+          if (next > 7.8) {
+            clearInterval(demoTimer);
+            demoTimer = null;
+            playDemo.textContent = "Play demo";
+            return;
+          }
+          slider.value = next.toFixed(1);
+          renderGeometry();
+        }, 70);
+      });
+      resetDemo.addEventListener("click", () => {
+        slider.value = "2.0";
+        renderGeometry();
+      });
       renderGeometry();
-
       setLanguage("ja");
+      window.addEventListener("load", () => {
+        renderMathDeferred();
+      });
     })();
   </script>
 </body>
