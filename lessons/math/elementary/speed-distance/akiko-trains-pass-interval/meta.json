@@ -1,0 +1,24 @@
+{
+  "id": "math-el-speed-distance-akiko-trains-pass-interval",
+  "title": {
+    "ja": "秋子さんと2つの列車（通過時間と間隔）",
+    "zh": "秋子与两列火车（通过时间与间距）",
+    "en": "Akiko and Two Trains (Passing Time & Gaps)"
+  },
+  "subject": "math",
+  "gradeBand": "elementary",
+  "topic": "speed-distance",
+  "slug": "akiko-trains-pass-interval",
+  "entry": "index.html",
+  "assets": [
+    "assets/problem-photo-processed.png"
+  ],
+  "features": [
+    "tabs:problem-solution-animation",
+    "teacher-mode",
+    "multilingual:ja-zh-en",
+    "auto-language-rotation",
+    "timeline-animation",
+    "cross-validation-matrix"
+  ]
+}
