@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-03-22T09:33:06.261Z",
-  "count": 6,
+  "generatedAt": "2026-03-22T09:40:41.316Z",
+  "count": 7,
   "lessons": [
     {
       "id": "math-el-geometry-area-ratio-parallelogram-diagonal-ratio",
@@ -128,6 +128,31 @@
       "entry": "index.html",
       "assets": [
         "assets/problem-001.png"
+      ]
+    },
+    {
+      "id": "math-el-speed-distance-river-boat-tamio-shigeru",
+      "title": {
+        "ja": "川のボート（たみお君としげる君）",
+        "zh": "河流划船（多美雄与茂）",
+        "en": "River Boats (Tamio and Shigeru)"
+      },
+      "subject": "math",
+      "gradeBand": "elementary",
+      "topic": "speed-distance",
+      "slug": "river-boat-tamio-shigeru",
+      "features": [
+        "tabs:problem-solution-animation",
+        "teacher-mode",
+        "multilingual:ja-zh-en",
+        "auto-language-rotation",
+        "timeline-animation",
+        "cross-validation-matrix"
+      ],
+      "path": "./lessons/math/elementary/speed-distance/river-boat-tamio-shigeru/",
+      "entry": "index.html",
+      "assets": [
+        "assets/problem-photo-processed.png"
       ]
     },
     {
