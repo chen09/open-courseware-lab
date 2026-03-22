@@ -1,12 +1,26 @@
 # Master Lesson Workflow Prompt (Copy/Paste)
 
-Use this prompt in a new Cursor Agent chat when you want full end-to-end lesson production.
+Use this file as a human-facing guide and wrapper reference.
+
+## Role Split (Human vs AI)
+- Primary runtime prompt for AI execution: `docs/KICKOFF_AGENT_PROMPT.md`
+- Human-facing architecture and onboarding doc: `AGENT_MASTER_WORKFLOW_PROMPT.md` (this file)
+- Stage-level executable details: `.cursor/skills/lesson-stage-*/SKILL.md`
+
+## Runtime Policy
+- Do not treat this file as the primary runtime prompt in normal lesson production.
+- For new problems, start from `docs/KICKOFF_AGENT_PROMPT.md` only.
+- Keep this file focused on explanation, onboarding context, and compatibility.
 
 > Note: `docs/KICKOFF_AGENT_PROMPT.md` is the active orchestration source.
 > Keep this file as a reusable wrapper template, and put detailed process updates into:
 > - `docs/KICKOFF_AGENT_PROMPT.md`
 > - `.cursor/skills/lesson-stage-*/SKILL.md`
 > - `docs/workflow-modular-architecture.md`
+
+## Legacy Wrapper Prompt (Compatibility Appendix)
+The following large prompt block is kept for compatibility with old workflows.
+When in doubt, prefer `docs/KICKOFF_AGENT_PROMPT.md`.
 
 ```markdown
 If asked in English: Execute an end-to-end production workflow for one interactive multilingual lesson, including problem extraction, multi-method solving, web research, multi-model cross-verification, implementation, QA, git PR flow, and production deployment.

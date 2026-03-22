@@ -1,5 +1,8 @@
 # KICKOFF Agent Prompt (Open Courseware Lab)
 
+说明：这是给 AI 执行的唯一主入口（runtime source of truth）。
+给人阅读的说明文档在：`AGENT_MASTER_WORKFLOW_PROMPT.md`。
+
 用法（每次新会话，推荐一步）：
 1. 一条消息内同时发送：
    - 下方 kickoff 代码块（完整）；
