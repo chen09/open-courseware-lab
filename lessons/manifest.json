@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-03-16T09:16:57.193Z",
-  "count": 4,
+  "generatedAt": "2026-03-22T09:04:18.708Z",
+  "count": 5,
   "lessons": [
     {
       "id": "math-el-geometry-area-ratio-parallelogram-diagonal-ratio",
@@ -103,6 +103,30 @@
       "entry": "index.html",
       "assets": [
         "assets/problem-001.png"
+      ]
+    },
+    {
+      "id": "math-el-speed-distance-trains-ab-overtake-pass",
+      "title": {
+        "ja": "二つの列車（追い越しとすれちがい）",
+        "zh": "两列火车（超车与相向错车）",
+        "en": "Two Trains (Overtake & Head-on Pass)"
+      },
+      "subject": "math",
+      "gradeBand": "elementary",
+      "topic": "speed-distance",
+      "slug": "trains-ab-overtake-pass",
+      "features": [
+        "tabs:problem-solution-animation",
+        "teacher-mode",
+        "multilingual:ja-zh-en",
+        "auto-language-rotation",
+        "timeline-animation"
+      ],
+      "path": "./lessons/math/elementary/speed-distance/trains-ab-overtake-pass/",
+      "entry": "index.html",
+      "assets": [
+        "assets/problem-photo-processed.png"
       ]
     }
   ]

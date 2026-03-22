@@ -1,0 +1,942 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Two Trains — Overtake & Pass</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" />
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+  <style>
+    :root {
+      --bg: #f7f8fb;
+      --ink: #1f2430;
+      --accent-a: #2563eb;
+      --accent-b: #dc2626;
+      --ok: #16a34a;
+      --card: #ffffff;
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Segoe UI", Tahoma, Arial, sans-serif;
+      color: var(--ink);
+      background: linear-gradient(180deg, #f8fafc 0%, #eef2ff 100%);
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      padding: 24px;
+    }
+
+    .app {
+      width: min(980px, 100%);
+      background: var(--card);
+      border: 1px solid #e5e7eb;
+      border-radius: 16px;
+      box-shadow: 0 20px 40px rgba(15, 23, 42, 0.08);
+      overflow: hidden;
+    }
+
+    .header {
+      padding: 18px 20px 10px;
+      border-bottom: 1px solid #eceff4;
+      background: #fcfdff;
+    }
+
+    .header h1 { margin: 0 0 8px; font-size: 20px; }
+    .header p { margin: 0; line-height: 1.5; color: #4b5563; font-size: 14px; }
+
+    .lang-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 10px;
+      flex-wrap: wrap;
+    }
+
+    .lang-buttons { display: flex; gap: 8px; flex-wrap: wrap; }
+
+    .lang-btn {
+      border: 1px solid #d1d5db;
+      background: #fff;
+      color: #111827;
+      border-radius: 8px;
+      padding: 6px 10px;
+      font-size: 13px;
+      cursor: pointer;
+    }
+
+    .lang-btn.active { background: #111827; color: #fff; border-color: #111827; }
+    .lang-btn.auto-on { background: #0f766e; color: #fff; border-color: #0f766e; }
+
+    .desc-stack { display: grid; gap: 6px; margin-top: 8px; }
+    .desc-ja { color: #1f2937; }
+    .desc-zh { color: #334155; }
+    .desc-en { color: #1e3a8a; }
+    .hidden { display: none !important; }
+
+    .tabs { display: flex; gap: 8px; padding: 12px 20px 0; flex-wrap: wrap; }
+
+    .tab-btn {
+      border: 1px solid #d1d5db;
+      background: #fff;
+      color: #111827;
+      border-radius: 10px;
+      padding: 7px 12px;
+      font-size: 14px;
+      cursor: pointer;
+    }
+
+    .tab-btn.active { background: #111827; border-color: #111827; color: #fff; }
+    .tab-panel { padding-top: 8px; }
+
+    .scene-wrap { padding: 18px 20px 8px; }
+
+    svg {
+      width: 100%;
+      height: auto;
+      display: block;
+      border-radius: 12px;
+      background: var(--bg);
+      border: 1px solid #e5e7eb;
+    }
+
+    .panel { display: grid; gap: 10px; padding: 12px 20px 20px; }
+
+    .controls {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 8px;
+      align-items: center;
+    }
+
+    button {
+      border: 0;
+      border-radius: 10px;
+      padding: 8px 12px;
+      font-size: 14px;
+      cursor: pointer;
+      background: #e5e7eb;
+      color: #111827;
+    }
+
+    button.primary { background: #111827; color: #fff; }
+    button.scenario-on { background: #0f766e; color: #fff; }
+
+    .slider-row {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 10px;
+      align-items: center;
+    }
+
+    input[type="range"] { width: 100%; min-width: 0; accent-color: #111827; }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 10px;
+    }
+
+    .card {
+      border: 1px solid #e5e7eb;
+      border-radius: 12px;
+      background: #fff;
+      padding: 10px 12px;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .card b { display: inline-block; min-width: 96px; }
+    .badge {
+      display: inline-block;
+      border-radius: 999px;
+      padding: 2px 10px;
+      font-size: 12px;
+      font-weight: 600;
+      color: #fff;
+      margin-left: 6px;
+      vertical-align: middle;
+    }
+    .b-a { background: var(--accent-a); }
+    .b-b { background: var(--accent-b); }
+    .b-ok { background: var(--ok); }
+    .answer { font-size: 15px; font-weight: 700; }
+
+    .foot { color: #6b7280; font-size: 12px; padding: 0 20px 18px; }
+
+    .vocab {
+      padding: 0 20px 10px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 8px;
+    }
+
+    .vocab .chip {
+      border: 1px solid #dbeafe;
+      background: #eff6ff;
+      border-radius: 999px;
+      padding: 6px 10px;
+      font-size: 12px;
+      text-align: center;
+      color: #1e3a8a;
+    }
+
+    .problem-wrap, .solution-wrap { padding: 12px 20px 18px; display: grid; gap: 12px; }
+
+    .problem-card, .solution-card {
+      border: 1px solid #e5e7eb;
+      border-radius: 12px;
+      background: #fff;
+      padding: 12px;
+      line-height: 1.6;
+    }
+
+    .problem-card h3, .solution-card h3 { margin: 0 0 8px; font-size: 16px; }
+
+    .problem-photo {
+      width: 100%;
+      max-width: 760px;
+      border-radius: 10px;
+      border: 1px solid #d1d5db;
+      display: block;
+    }
+
+    .math-block {
+      margin-top: 8px;
+      padding: 8px;
+      background: #f8fafc;
+      border-radius: 8px;
+      border: 1px dashed #cbd5e1;
+      overflow-x: auto;
+    }
+
+    .teacher-tools {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin: 8px 0 12px;
+    }
+
+    .teacher-tools button {
+      border: 1px solid #d1d5db;
+      background: #fff;
+      border-radius: 8px;
+      padding: 6px 10px;
+      font-size: 13px;
+      cursor: pointer;
+    }
+
+    .teacher-tools button.on { background: #0f766e; border-color: #0f766e; color: #fff; }
+
+    .step-block {
+      border-top: 1px dashed #d1d5db;
+      padding-top: 8px;
+      margin-top: 8px;
+    }
+
+    .step-q { font-weight: 600; color: #374151; margin: 6px 0; }
+
+    .scenario-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+
+    @media (max-width: 640px) {
+      body { padding: 12px; place-items: start center; }
+      .app { width: 100%; border-radius: 12px; }
+      .tabs { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); }
+      .stats { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <section class="header">
+      <div class="lang-row">
+        <h1 id="titleText">二つの列車（追い越しとすれちがい）</h1>
+        <div class="lang-buttons">
+          <button class="lang-btn" id="langJaBtn" type="button">日本語</button>
+          <button class="lang-btn" id="langZhBtn" type="button">中文</button>
+          <button class="lang-btn" id="langEnBtn" type="button">English Focus</button>
+          <button class="lang-btn" id="autoLangBtn" type="button">自动轮播 OFF</button>
+        </div>
+      </div>
+      <div class="desc-stack">
+        <p id="descJa" class="desc-ja"></p>
+        <p id="descZh" class="desc-zh"></p>
+        <p id="descEn" class="desc-en hidden"></p>
+      </div>
+    </section>
+
+    <section class="tabs">
+      <button id="tabProblemBtn" class="tab-btn" type="button">原题</button>
+      <button id="tabSolutionBtn" class="tab-btn" type="button">解法</button>
+      <button id="tabAnimationBtn" class="tab-btn active" type="button">动画</button>
+    </section>
+
+    <section id="tabProblem" class="tab-panel hidden">
+      <div class="problem-wrap">
+        <div class="problem-card">
+          <h3 id="probPhotoTitle">原题照片</h3>
+          <img class="problem-photo" src="./assets/problem-photo-processed.png" alt="train word problem" />
+        </div>
+        <div class="problem-card">
+          <h3 id="probTextTitle">题目文字</h3>
+          <p class="txt-ja">長さ100mで時速36kmのA列車が、長さ80mのB列車に追いつかれてから18秒で追いこされました。もし、このA、B列車が向かい合って進んでくるとき、何秒ですれちがいますか。</p>
+          <p class="txt-zh">A列车长100m、时速36km；B列车长80m。B从追上A起，经过18秒完全超过A。若两列车相向而行，完全错车需要多少秒？</p>
+          <p class="txt-en hidden">Train A is 100 m long at 36 km/h. Train B is 80 m long. After B catches up to A, B fully overtakes A in 18 s. If A and B instead travel toward each other, how many seconds until they fully pass?</p>
+        </div>
+        <div class="problem-card">
+          <h3 id="probGivenTitle">已知</h3>
+          <p class="txt-ja">A: 100m, 36km/h。B: 80m。同方向で「追いついてから完全追い越し」まで18秒。求: 相向きのすれちがい時間。</p>
+          <p class="txt-zh">A：长100m，36km/h。B：长80m。同向时从追上到完全超车历时18秒。求：相向完全错车时间。</p>
+          <p class="txt-en hidden">A: 100 m, 36 km/h. B: 80 m. Same direction: 18 s from catch-up to full overtake. Find head-on passing time.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="tabSolution" class="tab-panel hidden">
+      <div class="solution-wrap">
+        <div class="solution-card">
+          <h3 id="solTitle">解法（小学生向け）</h3>
+          <div class="teacher-tools">
+            <button id="teacherModeBtn" type="button">老师模式 OFF</button>
+            <button id="nextStepBtn" class="hidden" type="button">显示下一步</button>
+          </div>
+
+          <div class="step-block">
+            <p class="step-q txt-ja">ステップ1: Aの速さを m/秒 に直す</p>
+            <p class="step-q txt-zh">步骤1：把 A 的速度换成「米/秒」</p>
+            <p class="step-q txt-en hidden">Step 1: Convert A’s speed to m/s</p>
+            <div class="step-answer" data-step="1">
+              <p class="txt-ja">時速36km は 1時間で36km＝36000m。36000÷3600＝10。だから A は毎秒10m。</p>
+              <p class="txt-zh">36km/h 表示 1 小时走 36km＝36000m。36000÷3600＝10，所以 A 为 10 米/秒。</p>
+              <p class="txt-en hidden">36 km/h means 36,000 m per 3,600 s, so A is 10 m/s.</p>
+              <div class="math-block">$$\displaystyle 36\,\text{km/h}=\frac{36\times 1000}{3600}=10\,\text{m/s}$$</div>
+            </div>
+          </div>
+
+          <div class="step-block">
+            <p class="step-q txt-ja">ステップ2: 同方向の「速さの差」を求める</p>
+            <p class="step-q txt-zh">步骤2：求同向时的「速度差」</p>
+            <p class="step-q txt-en hidden">Step 2: Relative speed while overtaking</p>
+            <div class="step-answer" data-step="2">
+              <p class="txt-ja">BがAを完全に追い越す間に、BはAに対して「2両の長さのぶん」進みます（100m＋80m＝180m）。18秒で進むから、1秒あたり 180÷18＝10m。これが速さの差です。</p>
+              <p class="txt-zh">B 完全超过 A 时，相对要多走两列车长度之和 100＋80＝180（米）。18 秒走完这段，所以速度差为 180÷18＝10（米/秒）。</p>
+              <p class="txt-en hidden">To fully overtake, B must gain the combined lengths on A. In 18 s, the relative speed is 180 ÷ 18 = 10 m/s.</p>
+              <div class="math-block">$$\displaystyle (100+80)\div 18=10\,\text{m/s}$$</div>
+            </div>
+          </div>
+
+          <div class="step-block">
+            <p class="step-q txt-ja">ステップ3: Bの速さを出す</p>
+            <p class="step-q txt-zh">步骤3：求 B 的速度</p>
+            <p class="step-q txt-en hidden">Step 3: Speed of B</p>
+            <div class="step-answer" data-step="3">
+              <p class="txt-ja">Bのほうが速くて、差は毎秒10m。Aが毎秒10mなので、Bは 10＋10＝20（m/秒）。</p>
+              <p class="txt-zh">B 比 A 快，每秒多 10 米。A 是 10 米/秒，所以 B 为 10＋10＝20（米/秒）。</p>
+              <p class="txt-en hidden">B is faster than A by 10 m/s, so B is 10 + 10 = 20 m/s.</p>
+              <div class="math-block">$$\displaystyle v_B = 10 + 10 = 20\,\text{m/s}$$</div>
+            </div>
+          </div>
+
+          <div class="step-block">
+            <p class="step-q txt-ja">ステップ4: 向かい合うときの時間</p>
+            <p class="step-q txt-zh">步骤4：相向错车要几秒</p>
+            <p class="step-q txt-en hidden">Step 4: Head-on passing time</p>
+            <div class="step-answer" data-step="4">
+              <p class="txt-ja">向かい合うと、1秒で近づく量は「10＋20＝30m」。距離はやはり180m。だから 180÷30＝6（秒）。</p>
+              <p class="txt-zh">相向而行时，每秒靠近 10＋20＝30（米）；要错开的总长度仍是 180 米。180÷30＝6（秒）。</p>
+              <p class="txt-en hidden">Closing speed is 10 + 20 = 30 m/s over 180 m, so time is 180 ÷ 30 = 6 s.</p>
+              <div class="math-block">$$\displaystyle (100+80)\div(10+20)=6\,\text{s}$$</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="solution-card">
+          <h3 id="checkTitle">核对（另一种说法）</h3>
+          <p class="txt-ja">同方向: 距離180mを「速さの差10」で割ると18秒。逆向き: 同じ180mを「速さの和30」で割ると6秒。図で見ると、どちらも「前と後ろがすっきり離れるまで＝両方の長さを合わせたぶん」です。</p>
+          <p class="txt-zh">同向：180÷速度差10＝18 秒。相向：180÷速度和30＝6 秒。动画里两种情况都是「车头车尾完全分开＝两车长度之和」。</p>
+          <p class="txt-en hidden">Same direction: 180 ÷ 10 = 18 s. Opposite: 180 ÷ 30 = 6 s. Both cases cover the combined train lengths.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="tabAnimation" class="tab-panel">
+      <section class="scene-wrap">
+        <div class="scenario-row">
+          <button id="btnScenarioSame" class="primary scenario-on" type="button">同向超车</button>
+          <button id="btnScenarioOpp" type="button">相向错车</button>
+        </div>
+        <svg viewBox="0 0 920 300" aria-label="train motion">
+          <line x1="30" y1="200" x2="890" y2="200" stroke="#9ca3af" stroke-width="4" />
+          <text x="36" y="224" font-size="13" fill="#64748b" id="dirHint">→ 前进方向</text>
+
+          <rect id="trainABody" x="0" y="118" width="220" height="36" rx="6" fill="#2563eb" opacity="0.92" />
+          <text id="trainALabel" x="110" y="141" text-anchor="middle" font-size="14" fill="#fff">A 100m</text>
+
+          <rect id="trainBBody" x="0" y="168" width="176" height="36" rx="6" fill="#dc2626" opacity="0.92" />
+          <text id="trainBLabel" x="88" y="191" text-anchor="middle" font-size="14" fill="#fff">B 80m</text>
+
+          <line id="markerStart" x1="0" y1="90" x2="0" y2="230" stroke="#16a34a" stroke-width="2" stroke-dasharray="5 4" opacity="0" />
+          <line id="markerEnd" x1="0" y1="90" x2="0" y2="230" stroke="#f59e0b" stroke-width="2" stroke-dasharray="5 4" opacity="0" />
+
+          <text x="36" y="36" font-size="14" fill="#1f2937" id="animTitle">同方向：B 追上 A 后完全超过</text>
+          <text x="36" y="58" font-size="13" fill="#4b5563" id="timeReadout">t = 0.0 s / 18.0 s</text>
+          <text x="36" y="78" font-size="13" fill="#0369a1" id="hintLine"></text>
+        </svg>
+      </section>
+
+      <section class="vocab">
+        <div class="chip" id="v1">相对速度 relative speed</div>
+        <div class="chip" id="v2">长度之和 combined length</div>
+        <div class="chip" id="v3">同向 overtaking</div>
+        <div class="chip" id="v4">相向 head-on</div>
+      </section>
+
+      <section class="panel">
+        <div class="controls">
+          <button id="playBtn" class="primary" type="button">播放</button>
+          <button id="pauseBtn" type="button">暂停</button>
+          <button id="resetBtn" type="button">重置</button>
+          <button id="jumpMidBtn" type="button">跳到中途</button>
+          <button id="jumpEndBtn" type="button">跳到结束</button>
+        </div>
+        <div class="slider-row">
+          <input id="timeSlider" type="range" min="0" max="180" value="0" step="1" />
+          <div id="clock" style="font-weight:700;">0.0s</div>
+        </div>
+        <div class="stats">
+          <div class="card">
+            <div><b id="cardATitle">A 列车</b><span class="badge b-a">10 m/s</span></div>
+            <div id="cardALine1">长 100 m · 36 km/h</div>
+          </div>
+          <div class="card">
+            <div><b id="cardBTitle">B 列车</b><span class="badge b-b">20 m/s</span></div>
+            <div id="cardBLine1">长 80 m · 由题求出</div>
+          </div>
+          <div class="card">
+            <div><b id="cardRelTitle">本场景</b><span class="badge b-ok" id="relBadge">速度差 10 m/s</span></div>
+            <div id="cardRelLine">要错开总长度 180 m</div>
+          </div>
+          <div class="card">
+            <div class="answer" id="answerLine">答：相向错车 6 秒</div>
+          </div>
+        </div>
+      </section>
+      <div class="foot" id="footText">提示：先看同向「多走两车总长」，再切换到相向看「速度相加」。</div>
+    </section>
+  </main>
+
+  <script>
+    (function () {
+      "use strict";
+
+      const V_A = 10;
+      const V_B = 20;
+      const LA = 100;
+      const LB = 80;
+      const SUM = LA + LB;
+      const T_OVERTAKE = 18;
+      const T_PASS = 6;
+      const SCALE = 1.5;
+      const X0 = 120;
+      const Y_A = 118;
+      const Y_B = 168;
+
+      let scenario = "same";
+      let animT = 0;
+      let timer = null;
+
+      const el = {
+        trainA: document.getElementById("trainABody"),
+        trainB: document.getElementById("trainBBody"),
+        labelA: document.getElementById("trainALabel"),
+        labelB: document.getElementById("trainBLabel"),
+        slider: document.getElementById("timeSlider"),
+        clock: document.getElementById("clock"),
+        animTitle: document.getElementById("animTitle"),
+        timeReadout: document.getElementById("timeReadout"),
+        hintLine: document.getElementById("hintLine"),
+        dirHint: document.getElementById("dirHint"),
+        markerStart: document.getElementById("markerStart"),
+        markerEnd: document.getElementById("markerEnd"),
+        btnSame: document.getElementById("btnScenarioSame"),
+        btnOpp: document.getElementById("btnScenarioOpp"),
+        playBtn: document.getElementById("playBtn"),
+        pauseBtn: document.getElementById("pauseBtn"),
+        resetBtn: document.getElementById("resetBtn"),
+        jumpMid: document.getElementById("jumpMidBtn"),
+        jumpEnd: document.getElementById("jumpEndBtn"),
+        relBadge: document.getElementById("relBadge"),
+        cardRelLine: document.getElementById("cardRelLine"),
+        answerLine: document.getElementById("answerLine")
+      };
+
+      function mToPx(m) {
+        return X0 + m * SCALE;
+      }
+
+      function setRectTrain(rect, label, leftM, lenM, y) {
+        const x = mToPx(leftM);
+        const w = lenM * SCALE;
+        rect.setAttribute("x", String(x));
+        rect.setAttribute("y", String(y));
+        rect.setAttribute("width", String(w));
+        label.setAttribute("x", String(x + w / 2));
+        label.setAttribute("y", String(y + 23));
+      }
+
+      function renderSame(t) {
+        const aLeft = 150 + V_A * t;
+        const bLeft = 70 + V_B * t;
+        setRectTrain(el.trainA, el.labelA, aLeft, LA, Y_A);
+        setRectTrain(el.trainB, el.labelB, bLeft, LB, Y_B);
+        el.markerStart.setAttribute("opacity", "0");
+        el.markerEnd.setAttribute("opacity", "0");
+      }
+
+      function renderOpp(t) {
+        const aLeft = 150 + V_A * t;
+        const bLeft = 250 - V_B * t;
+        setRectTrain(el.trainA, el.labelA, aLeft, LA, Y_A);
+        setRectTrain(el.trainB, el.labelB, bLeft, LB, Y_B);
+        el.markerStart.setAttribute("opacity", "0.35");
+        el.markerEnd.setAttribute("opacity", "0.35");
+        const xMeet = mToPx(250);
+        el.markerStart.setAttribute("x1", String(xMeet));
+        el.markerStart.setAttribute("x2", String(xMeet));
+        const xEnd = mToPx(210);
+        el.markerEnd.setAttribute("x1", String(xEnd));
+        el.markerEnd.setAttribute("x2", String(xEnd));
+      }
+
+      function maxT() {
+        return scenario === "same" ? T_OVERTAKE : T_PASS;
+      }
+
+      function sliderToT() {
+        const max = maxT();
+        const steps = Math.round(max * 10);
+        const v = Number(el.slider.value);
+        return Math.min(max, (v / steps) * max);
+      }
+
+      function tToSlider(t) {
+        const max = maxT();
+        const steps = Math.round(max * 10);
+        return Math.round((t / max) * steps);
+      }
+
+      function renderAnim() {
+        const tx = i18n[lang];
+        const t = animT;
+        const cap = maxT();
+        if (scenario === "same") {
+          renderSame(t);
+        } else {
+          renderOpp(t);
+        }
+        el.timeReadout.textContent = tx.timeReadout
+          .replace("{t}", t.toFixed(1))
+          .replace("{cap}", String(cap));
+        el.clock.textContent = `${t.toFixed(1)}s / ${cap.toFixed(1)}s`;
+        el.hintLine.textContent =
+          scenario === "same" ? tx.hintSame : tx.hintOpp;
+        el.dirHint.textContent = scenario === "same" ? tx.dirHintSame : tx.dirHintOpp;
+        el.relBadge.textContent = scenario === "same" ? tx.badgeDiff : tx.badgeSum;
+        el.cardRelLine.textContent = scenario === "same" ? tx.relLineSame : tx.relLineOpp;
+      }
+
+      function setAnimT(t) {
+        animT = Math.max(0, Math.min(maxT(), t));
+        el.slider.value = String(tToSlider(animT));
+        renderAnim();
+      }
+
+      const i18n = {
+        ja: {
+          title: "二つの列車（追い越しとすれちがい）",
+          descJa: "Aは100m・36km/h、Bは80m。同方向では追いついてから18秒で完全追い越し。Bの速さを求め、相向きですれちがう時間を出します。",
+          descZh: "A长100m、36km/h；B长80m。同向时追上后18秒完全超车。先求B的速度，再求相向错车时间。",
+          descEn: "A is 100 m at 36 km/h; B is 80 m. Same direction: 18 s to fully overtake. Find B’s speed, then head-on passing time.",
+          tabProblem: "問題",
+          tabSolution: "解き方",
+          tabAnimation: "アニメ",
+          probPhoto: "問題の写真",
+          probText: "問題文",
+          probGiven: "わかっていること",
+          solTitle: "解き方（小学生向け）",
+          checkTitle: "確認（別の言い方）",
+          scenarioSame: "同方向 追い越し",
+          scenarioOpp: "向かい合う",
+          play: "再生",
+          pause: "一時停止",
+          reset: "最初へ",
+          jumpMid: "途中へ",
+          jumpEnd: "終わりへ",
+          animTitleSame: "同方向：B が A に追いついてから完全に追い越す",
+          animTitleOpp: "向かい合う：前同士が合ってから完全にすれちがう",
+          dirHintSame: "→ 進む向き",
+          dirHintOpp: "↔ 向かい合って進む",
+          timeReadout: "t = {t} 秒 / {cap} 秒",
+          hintSame: "緑のイメージ：Bの前がAの後ろにそろうところからスタート。",
+          hintOpp: "緑＝前同士が合う瞬間、オレンジ＝完全に離れる瞬間。",
+          v1: "相対速度 relative speed",
+          v2: "長さの和 combined length",
+          v3: "同方向 overtaking",
+          v4: "向かい合い head-on",
+          cardATitle: "A列車",
+          cardALine1: "長さ100m · 36km/h → 10m/秒",
+          cardBTitle: "B列車",
+          cardBLine1: "長さ80m · 題の条件から 20m/秒",
+          cardRelTitle: "この場面",
+          relLineSame: "進む距離の差：18秒で180m → 差10m/秒",
+          relLineOpp: "近づく速さ：10+20=30m/秒、距離180m",
+          badgeDiff: "速さの差 10m/秒",
+          badgeSum: "速さの和 30m/秒",
+          answerLine: "答え：向かい合うと <span style=\"color:#dc2626;\">6秒</span> ですれちがい",
+          footText: "ヒント：まず同方向で「2両ぶん進む」を見て、次に向かい合いで「速さを足す」を見比べましょう。",
+          teacherModeOff: "先生モード OFF",
+          teacherModeOn: "先生モード ON",
+          nextStep: "次のステップ",
+          allStepsShown: "すべて表示済み",
+          autoLangStart: "自動切替 OFF",
+          autoLangStop: "自動切替 ON"
+        },
+        zh: {
+          title: "两列火车（超车与相向错车）",
+          descJa: "Aは100m・36km/h、Bは80m。同方向では追いついてから18秒で完全追い越し。Bの速さを求め、相向きですれちがう時間を出します。",
+          descZh: "A长100m、36km/h；B长80m。同向时追上后18秒完全超车。先求B的速度，再求相向错车时间。",
+          descEn: "A is 100 m at 36 km/h; B is 80 m. Same direction: 18 s to fully overtake. Find B’s speed, then head-on passing time.",
+          tabProblem: "原题",
+          tabSolution: "解法",
+          tabAnimation: "动画",
+          probPhoto: "原题照片",
+          probText: "题目文字",
+          probGiven: "已知条件",
+          solTitle: "解法（小学生版）",
+          checkTitle: "核对（另一种说法）",
+          scenarioSame: "同向超车",
+          scenarioOpp: "相向错车",
+          play: "播放",
+          pause: "暂停",
+          reset: "重置",
+          jumpMid: "跳到中途",
+          jumpEnd: "跳到结束",
+          animTitleSame: "同向：B 从追上 A 到完全超过",
+          animTitleOpp: "相向：从车头相遇到完全错开",
+          dirHintSame: "→ 前进方向",
+          dirHintOpp: "↔ 相向前进",
+          timeReadout: "t = {t} 秒 / {cap} 秒",
+          hintSame: "想象：B 车头对齐 A 车尾时开始计时。",
+          hintOpp: "绿线：车头相遇；橙线：两车完全分离。",
+          v1: "相对速度 relative speed",
+          v2: "长度之和 combined length",
+          v3: "同向 overtaking",
+          v4: "相向 head-on",
+          cardATitle: "A 列车",
+          cardALine1: "长 100 m · 36 km/h → 10 m/s",
+          cardBTitle: "B 列车",
+          cardBLine1: "长 80 m · 由题意得 20 m/s",
+          cardRelTitle: "本场景",
+          relLineSame: "速度差在 18 s 内拉开 180 m → 差 10 m/s",
+          relLineOpp: "接近速度 10+20=30 m/s，路程 180 m",
+          badgeDiff: "速度差 10 m/s",
+          badgeSum: "速度和 30 m/s",
+          answerLine: "答：相向错车 <span style=\"color:#dc2626;\">6 秒</span>",
+          footText: "提示：先看同向「多走两车总长」，再切换到相向看「速度相加」。",
+          teacherModeOff: "老师模式 OFF",
+          teacherModeOn: "老师模式 ON",
+          nextStep: "显示下一步",
+          allStepsShown: "已全部显示",
+          autoLangStart: "自动轮播 OFF",
+          autoLangStop: "自动轮播 ON"
+        },
+        en: {
+          title: "Two Trains (Overtake & Head-on Pass)",
+          descJa: "Aは100m・36km/h、Bは80m。同方向では追いついてから18秒で完全追い越し。Bの速さを求め、相向きですれちがう時間を出します。",
+          descZh: "A长100m、36km/h；B长80m。同向时追上后18秒完全超车。先求B的速度，再求相向错车时间。",
+          descEn: "A: 100 m, 36 km/h. B: 80 m. Same direction: 18 s to fully overtake. Find B’s speed, then time to pass head-on.",
+          tabProblem: "Problem",
+          tabSolution: "Solution",
+          tabAnimation: "Animation",
+          probPhoto: "Problem photo",
+          probText: "Wording",
+          probGiven: "Given",
+          solTitle: "Solution (kid-friendly)",
+          checkTitle: "Cross-check",
+          scenarioSame: "Same direction",
+          scenarioOpp: "Head-on",
+          play: "Play",
+          pause: "Pause",
+          reset: "Reset",
+          jumpMid: "Midpoint",
+          jumpEnd: "End",
+          animTitleSame: "Same direction: full overtake after catch-up",
+          animTitleOpp: "Head-on: from first contact to full separation",
+          dirHintSame: "→ direction of travel",
+          dirHintOpp: "↔ moving toward each other",
+          timeReadout: "t = {t} s / {cap} s",
+          hintSame: "Start when B’s front lines up with A’s rear.",
+          hintOpp: "Green: fronts meet. Orange: full separation.",
+          v1: "relative speed 相対速度",
+          v2: "combined length 長さの和",
+          v3: "overtaking 同方向",
+          v4: "head-on 相向",
+          cardATitle: "Train A",
+          cardALine1: "100 m · 36 km/h → 10 m/s",
+          cardBTitle: "Train B",
+          cardBLine1: "80 m · from problem → 20 m/s",
+          cardRelTitle: "This scene",
+          relLineSame: "Relative 10 m/s closes 180 m in 18 s",
+          relLineOpp: "Closing speed 30 m/s over 180 m",
+          badgeDiff: "Δv = 10 m/s",
+          badgeSum: "sum v = 30 m/s",
+          answerLine: "Answer: head-on pass in <span style=\"color:#dc2626;\">6 s</span>",
+          footText: "Tip: compare “sum of lengths” in both cases; overtaking uses speed difference, head-on uses speed sum.",
+          teacherModeOff: "Teacher mode OFF",
+          teacherModeOn: "Teacher mode ON",
+          nextStep: "Next step",
+          allStepsShown: "All shown",
+          autoLangStart: "Auto rotate OFF",
+          autoLangStop: "Auto rotate ON"
+        }
+      };
+
+      let lang = "ja";
+      let activeTab = "animation";
+      let autoLangTimer = null;
+      let teacherMode = false;
+      let revealedSteps = 0;
+
+      const langButtons = {
+        ja: document.getElementById("langJaBtn"),
+        zh: document.getElementById("langZhBtn"),
+        en: document.getElementById("langEnBtn")
+      };
+      const tabButtons = {
+        problem: document.getElementById("tabProblemBtn"),
+        solution: document.getElementById("tabSolutionBtn"),
+        animation: document.getElementById("tabAnimationBtn")
+      };
+      const tabPanels = {
+        problem: document.getElementById("tabProblem"),
+        solution: document.getElementById("tabSolution"),
+        animation: document.getElementById("tabAnimation")
+      };
+      const autoLangBtn = document.getElementById("autoLangBtn");
+      const teacherModeBtn = document.getElementById("teacherModeBtn");
+      const nextStepBtn = document.getElementById("nextStepBtn");
+      const stepAnswers = Array.from(document.querySelectorAll(".step-answer"));
+
+      let solutionMathRendered = false;
+
+      function typesetSolutionMath() {
+        if (!window.renderMathInElement || solutionMathRendered) return;
+        try {
+          renderMathInElement(document.getElementById("tabSolution"), {
+            delimiters: [
+              { left: "$$", right: "$$", display: true },
+              { left: "\\(", right: "\\)", display: false },
+              { left: "$", right: "$", display: false }
+            ],
+            ignoredTags: ["script", "noscript", "style", "textarea", "pre", "code"]
+          });
+          solutionMathRendered = true;
+        } catch (_e) {
+          /* ignore */
+        }
+      }
+
+      function setLang(next) {
+        lang = next;
+        const tx = i18n[lang];
+        document.getElementById("titleText").textContent = tx.title;
+        document.getElementById("descJa").textContent = tx.descJa;
+        document.getElementById("descZh").textContent = tx.descZh;
+        document.getElementById("descEn").textContent = tx.descEn;
+        document.getElementById("probPhotoTitle").textContent = tx.probPhoto;
+        document.getElementById("probTextTitle").textContent = tx.probText;
+        document.getElementById("probGivenTitle").textContent = tx.probGiven;
+        document.getElementById("solTitle").textContent = tx.solTitle;
+        document.getElementById("checkTitle").textContent = tx.checkTitle;
+        document.getElementById("btnScenarioSame").textContent = tx.scenarioSame;
+        document.getElementById("btnScenarioOpp").textContent = tx.scenarioOpp;
+        el.playBtn.textContent = tx.play;
+        el.pauseBtn.textContent = tx.pause;
+        el.resetBtn.textContent = tx.reset;
+        el.jumpMid.textContent = tx.jumpMid;
+        el.jumpEnd.textContent = tx.jumpEnd;
+        document.getElementById("cardATitle").textContent = tx.cardATitle;
+        document.getElementById("cardALine1").textContent = tx.cardALine1;
+        document.getElementById("cardBTitle").textContent = tx.cardBTitle;
+        document.getElementById("cardBLine1").textContent = tx.cardBLine1;
+        document.getElementById("cardRelTitle").textContent = tx.cardRelTitle;
+        document.getElementById("answerLine").innerHTML = tx.answerLine;
+        document.getElementById("footText").textContent = tx.footText;
+        document.getElementById("v1").textContent = tx.v1;
+        document.getElementById("v2").textContent = tx.v2;
+        document.getElementById("v3").textContent = tx.v3;
+        document.getElementById("v4").textContent = tx.v4;
+        el.animTitle.textContent = scenario === "same" ? tx.animTitleSame : tx.animTitleOpp;
+        el.dirHint.textContent = scenario === "same" ? tx.dirHintSame : tx.dirHintOpp;
+
+        const englishFocus = lang === "en";
+        document.getElementById("descJa").classList.toggle("hidden", englishFocus);
+        document.getElementById("descZh").classList.toggle("hidden", englishFocus);
+        document.getElementById("descEn").classList.toggle("hidden", !englishFocus);
+        document.querySelectorAll(".txt-ja").forEach((n) => n.classList.toggle("hidden", englishFocus));
+        document.querySelectorAll(".txt-zh").forEach((n) => n.classList.toggle("hidden", englishFocus));
+        document.querySelectorAll(".txt-en").forEach((n) => n.classList.toggle("hidden", !englishFocus));
+
+        Object.keys(langButtons).forEach((k) => {
+          langButtons[k].classList.toggle("active", k === lang);
+        });
+        autoLangBtn.textContent = autoLangTimer ? tx.autoLangStop : tx.autoLangStart;
+        autoLangBtn.classList.toggle("auto-on", Boolean(autoLangTimer));
+        tabButtons.problem.textContent = tx.tabProblem;
+        tabButtons.solution.textContent = tx.tabSolution;
+        tabButtons.animation.textContent = tx.tabAnimation;
+        teacherModeBtn.textContent = teacherMode ? tx.teacherModeOn : tx.teacherModeOff;
+        nextStepBtn.textContent = revealedSteps >= stepAnswers.length ? tx.allStepsShown : tx.nextStep;
+
+        updateTeacherModeUI();
+        renderAnim();
+      }
+
+      function setScenario(next) {
+        scenario = next;
+        el.btnSame.classList.toggle("primary", scenario === "same");
+        el.btnSame.classList.toggle("scenario-on", scenario === "same");
+        el.btnOpp.classList.toggle("primary", scenario === "opp");
+        el.btnOpp.classList.toggle("scenario-on", scenario === "opp");
+        const maxSteps = Math.round(maxT() * 10);
+        el.slider.max = String(maxSteps);
+        pause();
+        setAnimT(0);
+        const tx = i18n[lang];
+        el.animTitle.textContent = scenario === "same" ? tx.animTitleSame : tx.animTitleOpp;
+        renderAnim();
+      }
+
+      function setTab(nextTab) {
+        activeTab = nextTab;
+        Object.keys(tabButtons).forEach((k) => {
+          tabButtons[k].classList.toggle("active", k === activeTab);
+          tabPanels[k].classList.toggle("hidden", k !== activeTab);
+        });
+        if (activeTab === "solution") {
+          typesetSolutionMath();
+        }
+      }
+
+      function updateTeacherModeUI() {
+        const tx = i18n[lang];
+        teacherModeBtn.textContent = teacherMode ? tx.teacherModeOn : tx.teacherModeOff;
+        teacherModeBtn.classList.toggle("on", teacherMode);
+        nextStepBtn.classList.toggle("hidden", !teacherMode);
+        if (!teacherMode) {
+          stepAnswers.forEach((s) => s.classList.remove("hidden"));
+          return;
+        }
+        stepAnswers.forEach((s, idx) => {
+          s.classList.toggle("hidden", idx >= revealedSteps);
+        });
+        nextStepBtn.textContent = revealedSteps >= stepAnswers.length ? tx.allStepsShown : tx.nextStep;
+      }
+
+      function toggleTeacherMode() {
+        teacherMode = !teacherMode;
+        revealedSteps = teacherMode ? 0 : stepAnswers.length;
+        updateTeacherModeUI();
+      }
+
+      function showNextStep() {
+        if (!teacherMode) return;
+        if (revealedSteps < stepAnswers.length) revealedSteps += 1;
+        updateTeacherModeUI();
+      }
+
+      function toggleAutoLang() {
+        if (autoLangTimer) {
+          clearInterval(autoLangTimer);
+          autoLangTimer = null;
+          setLang(lang);
+          return;
+        }
+        const order = ["ja", "zh", "en"];
+        autoLangTimer = setInterval(() => {
+          const idx = order.indexOf(lang);
+          setLang(order[(idx + 1) % order.length]);
+        }, 10000);
+        setLang(lang);
+      }
+
+      function pause() {
+        if (timer) clearInterval(timer);
+        timer = null;
+      }
+
+      function play() {
+        if (timer) return;
+        timer = setInterval(() => {
+          if (animT >= maxT() - 1e-6) {
+            pause();
+            return;
+          }
+          setAnimT(animT + 0.1);
+        }, 70);
+      }
+
+      el.slider.addEventListener("input", () => {
+        pause();
+        const max = maxT();
+        const steps = Math.round(max * 10);
+        const v = Number(el.slider.value);
+        animT = (v / steps) * max;
+        renderAnim();
+      });
+
+      el.btnSame.addEventListener("click", () => setScenario("same"));
+      el.btnOpp.addEventListener("click", () => setScenario("opp"));
+      el.playBtn.addEventListener("click", play);
+      el.pauseBtn.addEventListener("click", pause);
+      el.resetBtn.addEventListener("click", () => {
+        pause();
+        setAnimT(0);
+      });
+      el.jumpMid.addEventListener("click", () => {
+        pause();
+        setAnimT(maxT() * 0.5);
+      });
+      el.jumpEnd.addEventListener("click", () => {
+        pause();
+        setAnimT(maxT());
+      });
+
+      langButtons.ja.addEventListener("click", () => setLang("ja"));
+      langButtons.zh.addEventListener("click", () => setLang("zh"));
+      langButtons.en.addEventListener("click", () => setLang("en"));
+      autoLangBtn.addEventListener("click", toggleAutoLang);
+      teacherModeBtn.addEventListener("click", toggleTeacherMode);
+      nextStepBtn.addEventListener("click", showNextStep);
+      tabButtons.problem.addEventListener("click", () => setTab("problem"));
+      tabButtons.solution.addEventListener("click", () => setTab("solution"));
+      tabButtons.animation.addEventListener("click", () => setTab("animation"));
+
+      revealedSteps = stepAnswers.length;
+      setScenario("same");
+      setLang("ja");
+      setTab("animation");
+
+      window.addEventListener("load", typesetSolutionMath);
+    })();
+  </script>
+</body>
+</html>
