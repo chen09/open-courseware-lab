@@ -1,0 +1,252 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>River Current - Boat and Walker</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" />
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+  <style>
+    :root { --bg:#f7f8fb; --ink:#1f2430; --card:#fff; --a:#2563eb; --b:#dc2626; --ok:#16a34a; }
+    * { box-sizing: border-box; }
+    body { margin:0; font-family:"Segoe UI",Tahoma,Arial,sans-serif; color:var(--ink); background:linear-gradient(180deg,#f8fafc 0%,#eef2ff 100%); min-height:100vh; display:grid; place-items:center; padding:20px; }
+    .app { width:min(980px,100%); background:var(--card); border:1px solid #e5e7eb; border-radius:16px; overflow:hidden; box-shadow:0 18px 38px rgba(15,23,42,.08); }
+    .header { padding:16px 18px 10px; border-bottom:1px solid #eceff4; }
+    .lang-row { display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap; }
+    .lang-buttons { display:flex; gap:8px; flex-wrap:wrap; }
+    .lang-btn,.tab-btn { border:1px solid #d1d5db; background:#fff; border-radius:8px; padding:6px 10px; font-size:13px; cursor:pointer; color:#111827; }
+    .lang-btn.active,.tab-btn.active { background:#111827; border-color:#111827; color:#fff; }
+    .lang-btn.auto-on { background:#0f766e; border-color:#0f766e; color:#fff; }
+    .desc-stack { display:grid; gap:6px; margin-top:8px; }
+    .desc-stack p { margin:0; font-size:14px; line-height:1.45; }
+    .tabs { display:flex; gap:8px; padding:12px 18px 0; flex-wrap:wrap; }
+    .tab-panel { padding:10px 18px 18px; }
+    .hidden { display:none !important; }
+    .card { border:1px solid #e5e7eb; border-radius:12px; background:#fff; padding:12px; line-height:1.55; margin-bottom:10px; }
+    .card h3 { margin:0 0 8px; font-size:16px; }
+    .problem-photo { width:100%; max-width:760px; border-radius:10px; border:1px solid #d1d5db; display:block; }
+    .teacher-tools { display:flex; gap:8px; margin-bottom:10px; flex-wrap:wrap; }
+    .teacher-tools button { border:1px solid #d1d5db; background:#fff; border-radius:8px; padding:6px 10px; cursor:pointer; font-size:13px; }
+    .teacher-tools button.on { background:#0f766e; border-color:#0f766e; color:#fff; }
+    .step-block { border-top:1px dashed #d1d5db; padding-top:8px; margin-top:8px; }
+    .step-q { font-weight:600; margin:6px 0; }
+    .math-block { margin-top:8px; padding:8px; background:#f8fafc; border:1px dashed #cbd5e1; border-radius:8px; overflow-x:auto; }
+    svg { width:100%; height:auto; border:1px solid #e5e7eb; border-radius:12px; background:var(--bg); display:block; }
+    .controls { display:grid; grid-template-columns:repeat(auto-fit,minmax(130px,1fr)); gap:8px; margin-top:10px; }
+    .controls button { border:0; border-radius:9px; padding:8px 10px; font-size:14px; cursor:pointer; background:#e5e7eb; color:#111827; }
+    .controls .primary { background:#111827; color:#fff; }
+    .slider-row { display:grid; grid-template-columns:minmax(0,1fr) auto; gap:10px; align-items:center; margin-top:10px; }
+    input[type="range"] { width:100%; accent-color:#111827; }
+    .stats { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:10px; margin-top:10px; }
+    .badge { display:inline-block; border-radius:999px; padding:2px 10px; font-size:12px; color:#fff; margin-left:6px; font-weight:600; }
+    .b-a { background:var(--a); } .b-b { background:var(--b); } .b-ok { background:var(--ok); }
+    .answer { font-size:15px; font-weight:700; }
+    @media (max-width:640px) { body{padding:10px;place-items:start center;} .tabs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));} }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <section class="header">
+      <div class="lang-row">
+        <h1 id="titleText" style="margin:0;font-size:20px;">川の流れとボート・歩行（出会いと到着）</h1>
+        <div class="lang-buttons">
+          <button id="langJaBtn" class="lang-btn" type="button">日本語</button>
+          <button id="langZhBtn" class="lang-btn" type="button">中文</button>
+          <button id="langEnBtn" class="lang-btn" type="button">English Focus</button>
+          <button id="autoLangBtn" class="lang-btn" type="button">自动轮播 OFF</button>
+        </div>
+      </div>
+      <div class="desc-stack">
+        <p id="descJa"></p>
+        <p id="descZh"></p>
+        <p id="descEn" class="hidden"></p>
+      </div>
+    </section>
+
+    <section class="tabs">
+      <button id="tabProblemBtn" class="tab-btn">原题</button>
+      <button id="tabSolutionBtn" class="tab-btn">解法</button>
+      <button id="tabAnimationBtn" class="tab-btn active">动画</button>
+    </section>
+
+    <section id="tabProblem" class="tab-panel hidden">
+      <div class="card">
+        <h3 id="probPhotoTitle">原题照片</h3>
+        <img class="problem-photo" src="./assets/problem-photo-processed.png" alt="problem image" />
+      </div>
+      <div class="card">
+        <h3 id="probTextTitle">题目文字</h3>
+        <p class="txt-ja">一定の速さで流れている川があります。A君は甲地点から川下の乙地点に向かってボートをこぎはじめ、同時にB君は乙地点から甲地点に向かって、川にそった道を歩きはじめました。甲地点から全体の \(3/5\) のところで2人はすれちがい、A君が乙地点についたとき、B君は甲地点の120m手前でした。A君の静水でのこぐ速さは毎分45m、B君の歩く速さは毎分40mです。川の流速と、甲乙間の距離を求めなさい。</p>
+        <p class="txt-zh">一条河流速恒定。A从甲点乘船顺流去乙点，B同时从乙点沿岸步行去甲点。两人在从甲点算起全程 \(3/5\) 处相遇；当A到达乙点时，B距甲点还差120m。已知A静水划船速度45m/分，B步速40m/分。求：河流流速与甲乙距离。</p>
+        <p class="txt-en hidden">A rows a boat downstream from A to B while B starts walking from B to A at the same time. They meet at the point \(3/5\) of the full distance from A. When A reaches B, B is still 120 m away from A. Given A's still-water rowing speed is 45 m/min and B's walking speed is 40 m/min, find river current speed and distance AB.</p>
+      </div>
+    </section>
+
+    <section id="tabSolution" class="tab-panel hidden">
+      <div class="card">
+        <h3 id="solTitle">解法A（方程法）</h3>
+        <div class="teacher-tools">
+          <button id="teacherModeBtn" type="button">老师模式 OFF</button>
+          <button id="nextStepBtn" class="hidden" type="button">显示下一步</button>
+        </div>
+        <div class="step-block">
+          <p class="step-q">设甲乙距离为 \(D\)（m），流速为 \(c\)（m/分）。则A顺流速度是 \(45+c\)。</p>
+          <div class="step-answer" data-step="1">
+            <div class="math-block">$$\frac{3D/5}{45+c}=\frac{2D/5}{40}\Rightarrow \frac{3}{45+c}=\frac{2}{40}\Rightarrow 45+c=60$$</div>
+            <div class="math-block">$$c=15\ (\text{m/min})$$</div>
+          </div>
+        </div>
+        <div class="step-block">
+          <p class="step-q">A到乙点总时间 \(t_A=\frac{D}{60}\)。这段时间B走了 \(D-120\)。</p>
+          <div class="step-answer" data-step="2">
+            <div class="math-block">$$40\cdot\frac{D}{60}=D-120\Rightarrow \frac{2D}{3}=D-120\Rightarrow D=360\ (\text{m})$$</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3 id="crossTitle">解法B（比例+剩余路程）</h3>
+        <p>相遇点在 \(3/5\)，所以相遇前路程比 A:B = \(3:2\)，同时间下地速比也是 \(3:2\)。B速是40，所以A顺流速是60，故流速 \(=60-45=15\)。</p>
+        <p>A从相遇点到乙点还剩 \(2/5D\)，用时 \(\frac{2D/5}{60}=\frac{D}{150}\)。这段时间B从相遇点向甲走了 \(40\cdot\frac{D}{150}=\frac{4D}{15}\)。</p>
+        <div class="math-block">$$\text{相遇点到甲为 }3D/5,\ \text{到A到达时还剩 }120$$</div>
+        <div class="math-block">$$\frac{3D}{5}-\frac{4D}{15}=120\Rightarrow \frac{D}{3}=120\Rightarrow D=360$$</div>
+        <p>与解法A一致。</p>
+      </div>
+
+      <div class="card">
+        <h3>验证矩阵</h3>
+        <p>- Source A: 代数方程（本地）-> 流速 15，距离 360</p>
+        <p>- Source B: 比例法（本地）-> 流速 15，距离 360</p>
+        <p>- Source C: 外部公式参考（Boats & Streams）验证顺流速度 \(=\) 静水速度 + 流速 -> 一致</p>
+      </div>
+    </section>
+
+    <section id="tabAnimation" class="tab-panel">
+      <svg viewBox="0 0 920 300" aria-label="river timeline">
+        <rect x="40" y="118" width="840" height="90" rx="10" fill="#dbeafe" />
+        <line x1="100" y1="163" x2="820" y2="163" stroke="#60a5fa" stroke-width="3" />
+        <circle cx="120" cy="163" r="7" fill="#111827" />
+        <circle cx="800" cy="163" r="7" fill="#111827" />
+        <text x="106" y="186" font-size="13" fill="#111827">甲 A</text>
+        <text x="786" y="186" font-size="13" fill="#111827">乙 B</text>
+        <line id="meetLine" x1="552" y1="120" x2="552" y2="210" stroke="#16a34a" stroke-width="2" stroke-dasharray="5 4" />
+        <text x="558" y="133" font-size="12" fill="#166534">相遇点 3/5</text>
+        <circle id="boatDot" cx="120" cy="150" r="10" fill="#2563eb" />
+        <text id="boatLabel" x="120" y="136" text-anchor="middle" font-size="12" fill="#1d4ed8">A boat</text>
+        <circle id="walkDot" cx="800" cy="176" r="10" fill="#dc2626" />
+        <text id="walkLabel" x="800" y="198" text-anchor="middle" font-size="12" fill="#991b1b">B walk</text>
+        <line id="left120" x1="360" y1="120" x2="360" y2="210" stroke="#f59e0b" stroke-width="2" stroke-dasharray="4 3" opacity="0" />
+        <text id="left120Label" x="366" y="226" font-size="12" fill="#b45309" opacity="0">甲まで120m</text>
+        <text x="40" y="36" font-size="14" fill="#1f2937" id="animTitle">同時スタート -> 相遇 -> A到着</text>
+        <text x="40" y="58" font-size="13" fill="#475569" id="timeReadout">t = 0.0 min</text>
+        <text x="40" y="78" font-size="13" fill="#0369a1" id="hintLine">绿色线是相遇点，橙色线是B剩余120m位置。</text>
+      </svg>
+
+      <div class="controls">
+        <button id="playBtn" class="primary" type="button">播放</button>
+        <button id="pauseBtn" type="button">暂停</button>
+        <button id="resetBtn" type="button">重置</button>
+        <button id="meetBtn" type="button">跳到相遇</button>
+        <button id="endBtn" type="button">跳到A到乙</button>
+      </div>
+      <div class="slider-row">
+        <input id="timeSlider" type="range" min="0" max="600" value="0" step="1" />
+        <div id="clock" style="font-weight:700;">0.0 / 6.0 min</div>
+      </div>
+      <div class="stats">
+        <div class="card"><div><b id="s1">流速</b><span class="badge b-a">15 m/min</span></div><div id="s1d">顺流速度 60，静水45</div></div>
+        <div class="card"><div><b id="s2">甲乙距离</b><span class="badge b-b">360 m</span></div><div id="s2d">相遇点在 216m（从甲起）</div></div>
+        <div class="card"><div><b id="s3">终点状态</b><span class="badge b-ok">B距甲120m</span></div><div id="s3d">A到乙时，B位置=120m</div></div>
+        <div class="card"><div class="answer" id="answerLine">答案：流速 15 m/分；甲乙距离 360 m</div></div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    (function () {
+      "use strict";
+      const D = 360, vA = 60, vB = 40, T_END = 6, T_MEET = 3.6;
+      const xMin = 120, xMax = 800, scale = (xMax - xMin) / D;
+      const toX = (m) => xMin + m * scale;
+      const i18n = {
+        ja: { title:"川の流れとボート・歩行（出会いと到着）", descJa:"出会い位置と到着時の残り距離から、流速と距離を同時に求める問題。", descZh:"根据相遇点比例和到达时剩余路程，同时求流速与总距离。", descEn:"Use meet fraction and end-state remainder to solve current speed and total distance.", tabProblem:"問題", tabSolution:"解き方", tabAnimation:"アニメ", probPhoto:"問題写真", probText:"問題文", solTitle:"解法A（方程法）", crossTitle:"解法B（比率法）", play:"再生", pause:"一時停止", reset:"最初へ", meet:"相遇へ", end:"A到着へ", autoOff:"自動切替 OFF", autoOn:"自動切替 ON" },
+        zh: { title:"河流速度与划船步行（相遇与到达）", descJa:"出会い位置と到着時の残り距離から、流速と距離を同時に求める問題。", descZh:"根据相遇点比例和到达时剩余路程，同时求流速与总距离。", descEn:"Use meet fraction and end-state remainder to solve current speed and total distance.", tabProblem:"原题", tabSolution:"解法", tabAnimation:"动画", probPhoto:"原题照片", probText:"题目文字", solTitle:"解法A（方程法）", crossTitle:"解法B（比例法）", play:"播放", pause:"暂停", reset:"重置", meet:"到相遇", end:"到A到乙", autoOff:"自动轮播 OFF", autoOn:"自动轮播 ON" },
+        en: { title:"River Current with Boat and Walker (Meet & Arrival)", descJa:"出会い位置と到着時の残り距離から、流速と距離を同時に求める問題。", descZh:"根据相遇点比例和到达时剩余路程，同时求流速与总距离。", descEn:"Find current speed and distance from a meet-at-3/5 condition and a 120 m remainder at arrival.", tabProblem:"Problem", tabSolution:"Solution", tabAnimation:"Animation", probPhoto:"Problem Photo", probText:"Problem Text", solTitle:"Solution A (Equations)", crossTitle:"Solution B (Ratios)", play:"Play", pause:"Pause", reset:"Reset", meet:"Meet Point", end:"A Arrives", autoOff:"Auto Rotate OFF", autoOn:"Auto Rotate ON" }
+      };
+      const el = {
+        title:document.getElementById("titleText"), descJa:document.getElementById("descJa"), descZh:document.getElementById("descZh"), descEn:document.getElementById("descEn"),
+        tabProblemBtn:document.getElementById("tabProblemBtn"), tabSolutionBtn:document.getElementById("tabSolutionBtn"), tabAnimationBtn:document.getElementById("tabAnimationBtn"),
+        tabProblem:document.getElementById("tabProblem"), tabSolution:document.getElementById("tabSolution"), tabAnimation:document.getElementById("tabAnimation"),
+        probPhotoTitle:document.getElementById("probPhotoTitle"), probTextTitle:document.getElementById("probTextTitle"), solTitle:document.getElementById("solTitle"), crossTitle:document.getElementById("crossTitle"),
+        langJaBtn:document.getElementById("langJaBtn"), langZhBtn:document.getElementById("langZhBtn"), langEnBtn:document.getElementById("langEnBtn"), autoLangBtn:document.getElementById("autoLangBtn"),
+        teacherModeBtn:document.getElementById("teacherModeBtn"), nextStepBtn:document.getElementById("nextStepBtn"),
+        boatDot:document.getElementById("boatDot"), walkDot:document.getElementById("walkDot"), boatLabel:document.getElementById("boatLabel"), walkLabel:document.getElementById("walkLabel"),
+        left120:document.getElementById("left120"), left120Label:document.getElementById("left120Label"), timeReadout:document.getElementById("timeReadout"),
+        playBtn:document.getElementById("playBtn"), pauseBtn:document.getElementById("pauseBtn"), resetBtn:document.getElementById("resetBtn"), meetBtn:document.getElementById("meetBtn"), endBtn:document.getElementById("endBtn"),
+        slider:document.getElementById("timeSlider"), clock:document.getElementById("clock")
+      };
+      const stepAnswers = Array.from(document.querySelectorAll(".step-answer"));
+      let lang = "ja", tab = "animation", t = 0, timer = null, autoTimer = null, teacher = false, revealed = stepAnswers.length, mathDone = false;
+      function render() {
+        const xA = Math.min(D, vA * t);
+        const xB = Math.max(0, D - vB * t);
+        el.boatDot.setAttribute("cx", String(toX(xA)));
+        el.walkDot.setAttribute("cx", String(toX(xB)));
+        const show120 = t >= T_END - 1e-6;
+        el.left120.setAttribute("opacity", show120 ? "1" : "0");
+        el.left120Label.setAttribute("opacity", show120 ? "1" : "0");
+        el.timeReadout.textContent = `t = ${t.toFixed(1)} min`;
+        el.clock.textContent = `${t.toFixed(1)} / ${T_END.toFixed(1)} min`;
+      }
+      function setT(v) { t = Math.max(0, Math.min(T_END, v)); el.slider.value = String(Math.round(t * 100)); render(); }
+      function play() { if (timer) return; timer = setInterval(() => { if (t >= T_END - 1e-6) { pause(); return; } setT(t + 0.05); }, 70); }
+      function pause() { if (!timer) return; clearInterval(timer); timer = null; }
+      function setTab(next) {
+        tab = next;
+        el.tabProblemBtn.classList.toggle("active", tab === "problem"); el.tabSolutionBtn.classList.toggle("active", tab === "solution"); el.tabAnimationBtn.classList.toggle("active", tab === "animation");
+        el.tabProblem.classList.toggle("hidden", tab !== "problem"); el.tabSolution.classList.toggle("hidden", tab !== "solution"); el.tabAnimation.classList.toggle("hidden", tab !== "animation");
+        if (tab === "solution" && !mathDone && window.renderMathInElement) {
+          renderMathInElement(el.tabSolution, { delimiters:[{left:"$$",right:"$$",display:true},{left:"\\(",right:"\\)",display:false},{left:"$",right:"$",display:false}], ignoredTags:["script","noscript","style","textarea","pre","code"] });
+          mathDone = true;
+        }
+      }
+      function updateTeacher() {
+        el.teacherModeBtn.classList.toggle("on", teacher);
+        el.nextStepBtn.classList.toggle("hidden", !teacher);
+        if (!teacher) { stepAnswers.forEach((n) => n.classList.remove("hidden")); return; }
+        stepAnswers.forEach((n, i) => n.classList.toggle("hidden", i >= revealed));
+      }
+      function setLang(next) {
+        lang = next;
+        const tx = i18n[lang];
+        el.title.textContent = tx.title; el.descJa.textContent = tx.descJa; el.descZh.textContent = tx.descZh; el.descEn.textContent = tx.descEn;
+        el.tabProblemBtn.textContent = tx.tabProblem; el.tabSolutionBtn.textContent = tx.tabSolution; el.tabAnimationBtn.textContent = tx.tabAnimation;
+        el.probPhotoTitle.textContent = tx.probPhoto; el.probTextTitle.textContent = tx.probText; el.solTitle.textContent = tx.solTitle; el.crossTitle.textContent = tx.crossTitle;
+        el.playBtn.textContent = tx.play; el.pauseBtn.textContent = tx.pause; el.resetBtn.textContent = tx.reset; el.meetBtn.textContent = tx.meet; el.endBtn.textContent = tx.end;
+        el.autoLangBtn.textContent = autoTimer ? tx.autoOn : tx.autoOff; el.autoLangBtn.classList.toggle("auto-on", Boolean(autoTimer));
+        const en = lang === "en";
+        el.descJa.classList.toggle("hidden", en); el.descZh.classList.toggle("hidden", en); el.descEn.classList.toggle("hidden", !en);
+        document.querySelectorAll(".txt-ja").forEach((n) => n.classList.toggle("hidden", en));
+        document.querySelectorAll(".txt-zh").forEach((n) => n.classList.toggle("hidden", en));
+        document.querySelectorAll(".txt-en").forEach((n) => n.classList.toggle("hidden", !en));
+        el.langJaBtn.classList.toggle("active", lang === "ja"); el.langZhBtn.classList.toggle("active", lang === "zh"); el.langEnBtn.classList.toggle("active", lang === "en");
+      }
+      function toggleAuto() {
+        if (autoTimer) { clearInterval(autoTimer); autoTimer = null; setLang(lang); return; }
+        const order = ["ja", "zh", "en"];
+        autoTimer = setInterval(() => { const i = order.indexOf(lang); setLang(order[(i + 1) % order.length]); }, 10000);
+        setLang(lang);
+      }
+      el.playBtn.addEventListener("click", play); el.pauseBtn.addEventListener("click", pause); el.resetBtn.addEventListener("click", () => { pause(); setT(0); });
+      el.meetBtn.addEventListener("click", () => { pause(); setT(T_MEET); }); el.endBtn.addEventListener("click", () => { pause(); setT(T_END); });
+      el.slider.addEventListener("input", () => { pause(); setT(Number(el.slider.value) / 100); });
+      el.tabProblemBtn.addEventListener("click", () => setTab("problem")); el.tabSolutionBtn.addEventListener("click", () => setTab("solution")); el.tabAnimationBtn.addEventListener("click", () => setTab("animation"));
+      el.langJaBtn.addEventListener("click", () => setLang("ja")); el.langZhBtn.addEventListener("click", () => setLang("zh")); el.langEnBtn.addEventListener("click", () => setLang("en")); el.autoLangBtn.addEventListener("click", toggleAuto);
+      el.teacherModeBtn.addEventListener("click", () => { teacher = !teacher; revealed = teacher ? 0 : stepAnswers.length; updateTeacher(); });
+      el.nextStepBtn.addEventListener("click", () => { if (!teacher) return; if (revealed < stepAnswers.length) revealed += 1; updateTeacher(); });
+      setLang("ja"); setTab("animation"); setT(0); updateTeacher();
+    })();
+  </script>
+</body>
+</html>
