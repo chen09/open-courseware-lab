@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-03-22T09:40:41.316Z",
-  "count": 7,
+  "generatedAt": "2026-03-22T09:45:11.178Z",
+  "count": 8,
   "lessons": [
     {
       "id": "math-el-geometry-area-ratio-parallelogram-diagonal-ratio",
@@ -150,6 +150,31 @@
         "cross-validation-matrix"
       ],
       "path": "./lessons/math/elementary/speed-distance/river-boat-tamio-shigeru/",
+      "entry": "index.html",
+      "assets": [
+        "assets/problem-photo-processed.png"
+      ]
+    },
+    {
+      "id": "math-el-speed-distance-river-current-boat-walk-meet",
+      "title": {
+        "ja": "川の流れとボート・歩行（出会いと到着）",
+        "zh": "河流速度与划船步行（相遇与到达）",
+        "en": "River Current with Boat and Walker (Meet & Arrival)"
+      },
+      "subject": "math",
+      "gradeBand": "elementary",
+      "topic": "speed-distance",
+      "slug": "river-current-boat-walk-meet",
+      "features": [
+        "tabs:problem-solution-animation",
+        "teacher-mode",
+        "multilingual:ja-zh-en",
+        "auto-language-rotation",
+        "timeline-animation",
+        "cross-validation-matrix"
+      ],
+      "path": "./lessons/math/elementary/speed-distance/river-current-boat-walk-meet/",
       "entry": "index.html",
       "assets": [
         "assets/problem-photo-processed.png"
