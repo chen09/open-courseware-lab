@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-03-22T09:04:18.708Z",
-  "count": 5,
+  "generatedAt": "2026-03-22T09:33:06.261Z",
+  "count": 6,
   "lessons": [
     {
       "id": "math-el-geometry-area-ratio-parallelogram-diagonal-ratio",
@@ -79,6 +79,31 @@
         "assets/explain/scene-01.mp4",
         "assets/explain/scene-01.poster.webp",
         "assets/explain/scene-01.vtt"
+      ]
+    },
+    {
+      "id": "math-el-speed-distance-akiko-trains-pass-interval",
+      "title": {
+        "ja": "秋子さんと2つの列車（通過時間と間隔）",
+        "zh": "秋子与两列火车（通过时间与间距）",
+        "en": "Akiko and Two Trains (Passing Time & Gaps)"
+      },
+      "subject": "math",
+      "gradeBand": "elementary",
+      "topic": "speed-distance",
+      "slug": "akiko-trains-pass-interval",
+      "features": [
+        "tabs:problem-solution-animation",
+        "teacher-mode",
+        "multilingual:ja-zh-en",
+        "auto-language-rotation",
+        "timeline-animation",
+        "cross-validation-matrix"
+      ],
+      "path": "./lessons/math/elementary/speed-distance/akiko-trains-pass-interval/",
+      "entry": "index.html",
+      "assets": [
+        "assets/problem-photo-processed.png"
       ]
     },
     {

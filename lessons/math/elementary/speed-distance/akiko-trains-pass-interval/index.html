@@ -1,0 +1,696 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Akiko and Two Trains</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" />
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+  <style>
+    :root {
+      --bg: #f7f8fb;
+      --ink: #1f2430;
+      --card: #ffffff;
+      --line: #9ca3af;
+      --n: #2563eb;
+      --e: #dc2626;
+      --ok: #16a34a;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Segoe UI", Tahoma, Arial, sans-serif;
+      color: var(--ink);
+      background: linear-gradient(180deg, #f8fafc 0%, #eef2ff 100%);
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      padding: 20px;
+    }
+    .app {
+      width: min(980px, 100%);
+      background: var(--card);
+      border: 1px solid #e5e7eb;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 18px 38px rgba(15, 23, 42, 0.08);
+    }
+    .header { padding: 16px 18px 10px; border-bottom: 1px solid #eceff4; }
+    .lang-row { display: flex; justify-content: space-between; gap: 10px; align-items: center; flex-wrap: wrap; }
+    .lang-buttons { display: flex; gap: 8px; flex-wrap: wrap; }
+    .lang-btn, .tab-btn {
+      border: 1px solid #d1d5db;
+      background: #fff;
+      border-radius: 8px;
+      padding: 6px 10px;
+      font-size: 13px;
+      cursor: pointer;
+      color: #111827;
+    }
+    .lang-btn.active, .tab-btn.active {
+      background: #111827;
+      border-color: #111827;
+      color: #fff;
+    }
+    .lang-btn.auto-on {
+      background: #0f766e;
+      border-color: #0f766e;
+      color: #fff;
+    }
+    .desc-stack { display: grid; gap: 6px; margin-top: 8px; }
+    .desc-stack p { margin: 0; font-size: 14px; line-height: 1.45; }
+    .tabs { display: flex; gap: 8px; padding: 12px 18px 0; }
+    .tab-panel { padding: 10px 18px 18px; }
+    .hidden { display: none !important; }
+
+    .card {
+      border: 1px solid #e5e7eb;
+      border-radius: 12px;
+      background: #fff;
+      padding: 12px;
+      line-height: 1.55;
+      margin-bottom: 10px;
+    }
+    .card h3 { margin: 0 0 8px; font-size: 16px; }
+    .problem-photo {
+      width: 100%;
+      max-width: 760px;
+      border-radius: 10px;
+      border: 1px solid #d1d5db;
+      display: block;
+    }
+    .teacher-tools { display: flex; gap: 8px; margin-bottom: 10px; flex-wrap: wrap; }
+    .teacher-tools button {
+      border: 1px solid #d1d5db;
+      background: #fff;
+      border-radius: 8px;
+      padding: 6px 10px;
+      cursor: pointer;
+      font-size: 13px;
+    }
+    .teacher-tools button.on {
+      background: #0f766e;
+      border-color: #0f766e;
+      color: #fff;
+    }
+    .step-block { border-top: 1px dashed #d1d5db; padding-top: 8px; margin-top: 8px; }
+    .step-q { font-weight: 600; margin: 6px 0; }
+    .math-block {
+      margin-top: 8px;
+      padding: 8px;
+      background: #f8fafc;
+      border: 1px dashed #cbd5e1;
+      border-radius: 8px;
+      overflow-x: auto;
+    }
+
+    .scene-wrap { padding: 12px 0 8px; }
+    svg {
+      width: 100%;
+      height: auto;
+      display: block;
+      border: 1px solid #e5e7eb;
+      border-radius: 12px;
+      background: var(--bg);
+    }
+    .controls {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+      gap: 8px;
+      margin-top: 10px;
+    }
+    .controls button {
+      border: 0;
+      border-radius: 9px;
+      padding: 8px 10px;
+      font-size: 14px;
+      cursor: pointer;
+      background: #e5e7eb;
+      color: #111827;
+    }
+    .controls .primary { background: #111827; color: #fff; }
+    .slider-row {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 10px;
+      align-items: center;
+      margin-top: 10px;
+    }
+    input[type="range"] { width: 100%; accent-color: #111827; }
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .badge {
+      display: inline-block;
+      border-radius: 999px;
+      padding: 2px 10px;
+      font-size: 12px;
+      color: #fff;
+      margin-left: 6px;
+      font-weight: 600;
+    }
+    .b-n { background: var(--n); }
+    .b-e { background: var(--e); }
+    .b-ok { background: var(--ok); }
+    .answer { font-size: 15px; font-weight: 700; }
+
+    @media (max-width: 640px) {
+      body { padding: 10px; place-items: start center; }
+      .tabs { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <section class="header">
+      <div class="lang-row">
+        <h1 id="titleText" style="margin:0;font-size:20px;">秋子さんと2つの列車（通過時間と間隔）</h1>
+        <div class="lang-buttons">
+          <button class="lang-btn" id="langJaBtn" type="button">日本語</button>
+          <button class="lang-btn" id="langZhBtn" type="button">中文</button>
+          <button class="lang-btn" id="langEnBtn" type="button">English Focus</button>
+          <button class="lang-btn" id="autoLangBtn" type="button">自动轮播 OFF</button>
+        </div>
+      </div>
+      <div class="desc-stack">
+        <p id="descJa"></p>
+        <p id="descZh"></p>
+        <p id="descEn" class="hidden"></p>
+      </div>
+    </section>
+
+    <section class="tabs">
+      <button id="tabProblemBtn" class="tab-btn">原题</button>
+      <button id="tabSolutionBtn" class="tab-btn">解法</button>
+      <button id="tabAnimationBtn" class="tab-btn active">动画</button>
+    </section>
+
+    <section id="tabProblem" class="tab-panel hidden">
+      <div class="card">
+        <h3 id="probPhotoTitle">原题照片</h3>
+        <img class="problem-photo" src="./assets/problem-photo-processed.png" alt="problem image" />
+      </div>
+      <div class="card">
+        <h3 id="probTextTitle">题目文字</h3>
+        <p class="txt-ja">秋子さんの前を左から普通列車が通過し始め、10秒後に通過し終わりました。さらに普通列車が通過し終わってから10秒後に右から特急列車が通過し始めました。普通列車と特急列車の速さはそれぞれ時速57.6km、時速72kmです。普通列車も特急列車も長さが同じとして、次の問いに答えなさい。</p>
+        <p class="txt-ja">（1）特急列車が通過し始めてから通過し終わるまで何秒かかるか。</p>
+        <p class="txt-ja">（2）普通列車が通過し始めたとき、2つの列車は何mはなれているか。</p>
+        <p class="txt-ja">（3）特急列車が通過し終わったとき、2つの列車は何mはなれているか。</p>
+        <p class="txt-zh">普通列车从左向右经过秋子，10秒完全通过。再过10秒，特急列车从右向左开始经过秋子。两车速度分别是57.6km/h与72km/h，且两车长度相同。求：（1）特急通过秋子需几秒；（2）普通列车刚开始通过时，两车相距多少米；（3）特急列车刚完全通过时，两车相距多少米。</p>
+        <p class="txt-en hidden">A local train starts passing Akiko from left to right and finishes in 10 s. Ten seconds after that finish, an express train starts passing Akiko from right to left. Speeds are 57.6 km/h and 72 km/h; both trains have the same length. Find: (1) express passing time, (2) distance between trains when local starts passing, (3) distance between trains when express finishes passing.</p>
+      </div>
+    </section>
+
+    <section id="tabSolution" class="tab-panel hidden">
+      <div class="card">
+        <h3 id="solTitle">解法（小学生向け）</h3>
+        <div class="teacher-tools">
+          <button id="teacherModeBtn" type="button">老师模式 OFF</button>
+          <button id="nextStepBtn" class="hidden" type="button">显示下一步</button>
+        </div>
+
+        <div class="step-block">
+          <p class="step-q txt-ja">ステップ1: 速さを m/s に直す</p>
+          <p class="step-q txt-zh">步骤1：把速度换成 m/s</p>
+          <p class="step-q txt-en hidden">Step 1: Convert speeds to m/s</p>
+          <div class="step-answer" data-step="1">
+            <div class="math-block">$$57.6\text{ km/h}=16\text{ m/s},\quad 72\text{ km/h}=20\text{ m/s}$$</div>
+          </div>
+        </div>
+
+        <div class="step-block">
+          <p class="step-q txt-ja">ステップ2: 列車の長さを出す</p>
+          <p class="step-q txt-zh">步骤2：先求两车共同长度</p>
+          <p class="step-q txt-en hidden">Step 2: Find the common train length</p>
+          <div class="step-answer" data-step="2">
+            <p class="txt-ja">普通列車は10秒で秋子さんの前を通過完了。長さは \(16\times10=160\) m。</p>
+            <p class="txt-zh">普通列车10秒通过，长度 \(16\times10=160\) 米。</p>
+            <p class="txt-en hidden">Local train length is \(16\times10=160\) m.</p>
+            <div class="math-block">$$L=16\times10=160\text{ m}$$</div>
+          </div>
+        </div>
+
+        <div class="step-block">
+          <p class="step-q txt-ja">ステップ3: 問(1) 特急の通過時間</p>
+          <p class="step-q txt-zh">步骤3：问(1) 特急通过时间</p>
+          <p class="step-q txt-en hidden">Step 3: Q1 express passing time</p>
+          <div class="step-answer" data-step="3">
+            <div class="math-block">$$t_E=\frac{160}{20}=8\text{ s}$$</div>
+          </div>
+        </div>
+
+        <div class="step-block">
+          <p class="step-q txt-ja">ステップ4: 問(2) 普通列車開始時の間隔</p>
+          <p class="step-q txt-zh">步骤4：问(2) 普通列车开始时的间距</p>
+          <p class="step-q txt-en hidden">Step 4: Q2 start-time gap</p>
+          <div class="step-answer" data-step="4">
+            <p class="txt-ja">特急の先頭は \(t=20\) 秒で秋子さん位置に到着するので、\(t=0\) では右に \(20\times20=400\) m 離れている。</p>
+            <div class="math-block">$$d_2=20\times20=400\text{ m}$$</div>
+          </div>
+        </div>
+
+        <div class="step-block">
+          <p class="step-q txt-ja">ステップ5: 問(3) 特急通過完了時の間隔</p>
+          <p class="step-q txt-zh">步骤5：问(3) 特急通过完成时的间距</p>
+          <p class="step-q txt-en hidden">Step 5: Q3 final gap</p>
+          <div class="step-answer" data-step="5">
+            <p class="txt-ja">特急の通過完了は \(t=28\) 秒。普通列車の後端位置は \(16\times28-160=288\) m。特急の後端は秋子さん位置(0m)。したがって間隔は \(288\) m。</p>
+            <div class="math-block">$$d_3=(16\times28-160)-0=288\text{ m}$$</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3 id="crossTitle">双重核对（独立方法）</h3>
+        <p class="txt-ja">方法A（座標法）：先頭/後端の位置式を時間で追跡。</p>
+        <p class="txt-ja">方法B（時間差法）：\(t=20\)で2車端点が接し、そこから20秒巻き戻して \(400\)m、8秒進めて \(288\)m を得る。</p>
+        <p class="txt-zh">方法A（坐标法）：写出车头/车尾位置随时间变化。</p>
+        <p class="txt-zh">方法B（时间差法）：在 \(t=20\) 秒两车端点恰好接触，向前推20秒得400m，向后推8秒得288m。</p>
+      </div>
+    </section>
+
+    <section id="tabAnimation" class="tab-panel">
+      <div class="scene-wrap">
+        <svg viewBox="0 0 920 300" aria-label="train timeline">
+          <line x1="30" y1="200" x2="890" y2="200" stroke="#9ca3af" stroke-width="4" />
+          <line id="akikoLine" x1="460" y1="80" x2="460" y2="230" stroke="#16a34a" stroke-width="2" stroke-dasharray="5 4" />
+          <text x="468" y="94" font-size="13" fill="#166534" id="akikoLabel">秋子位置 x=0m</text>
+
+          <rect id="normalRect" x="0" y="120" width="100" height="34" rx="5" fill="#2563eb" opacity="0.92" />
+          <text id="normalLabel" x="0" y="142" text-anchor="middle" fill="#fff" font-size="13">普通 160m</text>
+
+          <rect id="expressRect" x="0" y="162" width="100" height="34" rx="5" fill="#dc2626" opacity="0.92" />
+          <text id="expressLabel" x="0" y="184" text-anchor="middle" fill="#fff" font-size="13">特急 160m</text>
+
+          <text x="30" y="34" font-size="14" fill="#1f2937" id="animTitle">时间轴：0s 到 28s</text>
+          <text x="30" y="56" font-size="13" fill="#475569" id="timeReadout">t = 0.0s</text>
+          <text x="30" y="76" font-size="13" fill="#0369a1" id="hintLine">蓝车先过，红车后过</text>
+        </svg>
+      </div>
+
+      <div class="controls">
+        <button id="playBtn" class="primary" type="button">播放</button>
+        <button id="pauseBtn" type="button">暂停</button>
+        <button id="resetBtn" type="button">重置</button>
+        <button id="jump10Btn" type="button">跳到10s</button>
+        <button id="jump20Btn" type="button">跳到20s</button>
+        <button id="jump28Btn" type="button">跳到28s</button>
+      </div>
+
+      <div class="slider-row">
+        <input id="timeSlider" type="range" min="0" max="280" value="0" step="1" />
+        <div id="clock" style="font-weight:700;">0.0s / 28.0s</div>
+      </div>
+
+      <div class="stats">
+        <div class="card">
+          <div><b id="normalTitle">普通列车</b><span class="badge b-n">16 m/s</span></div>
+          <div id="normalInfo">通过秋子：0s 到 10s</div>
+        </div>
+        <div class="card">
+          <div><b id="expressTitle">特急列车</b><span class="badge b-e">20 m/s</span></div>
+          <div id="expressInfo">通过秋子：20s 到 28s</div>
+        </div>
+        <div class="card">
+          <div><b id="gapTitle">两车最近间距</b><span class="badge b-ok" id="gapBadge">gap</span></div>
+          <div id="gapInfo">t=0时 400m；t=28时 288m</div>
+        </div>
+        <div class="card">
+          <div class="answer" id="answerLine">答案：(1) 8秒　(2) 400m　(3) 288m</div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    (function () {
+      "use strict";
+
+      const VN = 16;
+      const VE = 20;
+      const LEN = 160;
+      const T_MAX = 28;
+      const X_AKIKO = 460;
+      const SCALE = 1.1;
+
+      const i18n = {
+        ja: {
+          title: "秋子さんと2つの列車（通過時間と間隔）",
+          descJa: "普通列車が先に通過し、10秒後に通過完了。さらに10秒後、特急列車が反対方向から通過開始します。",
+          descZh: "普通列车先通过，10秒通过完成，再过10秒特急列车从反方向开始通过。",
+          descEn: "Local train passes first (finishes at 10 s). Ten seconds later, express starts passing from the opposite direction.",
+          tabProblem: "原题",
+          tabSolution: "解法",
+          tabAnimation: "动画",
+          probPhoto: "原题照片",
+          probText: "题目文字",
+          solTitle: "解法（小学生向け）",
+          crossTitle: "双重核对（独立方法）",
+          play: "再生",
+          pause: "一時停止",
+          reset: "最初へ",
+          jump10: "10秒へ",
+          jump20: "20秒へ",
+          jump28: "28秒へ",
+          animTitle: "時間軸：0秒 -> 28秒",
+          hint: "青が先、赤が後。緑線は秋子さん位置。",
+          normalTitle: "普通列車",
+          normalInfo: "通過：0秒から10秒",
+          expressTitle: "特急列車",
+          expressInfo: "通過：20秒から28秒",
+          gapTitle: "2列車の最短間隔",
+          gapInfo: "t=0で400m、t=28で288m",
+          answer: "答え：(1) 8秒　(2) 400m　(3) 288m",
+          teacherOff: "先生モード OFF",
+          teacherOn: "先生モード ON",
+          nextStep: "次のステップ",
+          allShown: "すべて表示済み",
+          autoOff: "自動切替 OFF",
+          autoOn: "自動切替 ON"
+        },
+        zh: {
+          title: "秋子与两列火车（通过时间与间距）",
+          descJa: "普通列車が先に通過し、10秒後に通過完了。さらに10秒後、特急列車が反対方向から通過開始します。",
+          descZh: "普通列车先通过，10秒通过完成；再过10秒，特急列车从反方向开始通过。",
+          descEn: "Local train passes first (finishes at 10 s). Ten seconds later, express starts passing from the opposite direction.",
+          tabProblem: "原题",
+          tabSolution: "解法",
+          tabAnimation: "动画",
+          probPhoto: "原题照片",
+          probText: "题目文字",
+          solTitle: "解法（小学版）",
+          crossTitle: "双重核对（独立方法）",
+          play: "播放",
+          pause: "暂停",
+          reset: "重置",
+          jump10: "跳到10秒",
+          jump20: "跳到20秒",
+          jump28: "跳到28秒",
+          animTitle: "时间轴：0秒 -> 28秒",
+          hint: "蓝车先过，红车后过；绿线是秋子位置。",
+          normalTitle: "普通列车",
+          normalInfo: "通过区间：0秒到10秒",
+          expressTitle: "特急列车",
+          expressInfo: "通过区间：20秒到28秒",
+          gapTitle: "两车最近间距",
+          gapInfo: "t=0 时 400m；t=28 时 288m",
+          answer: "答案：(1) 8秒　(2) 400m　(3) 288m",
+          teacherOff: "老师模式 OFF",
+          teacherOn: "老师模式 ON",
+          nextStep: "显示下一步",
+          allShown: "已全部显示",
+          autoOff: "自动轮播 OFF",
+          autoOn: "自动轮播 ON"
+        },
+        en: {
+          title: "Akiko and Two Trains (Passing Time & Gaps)",
+          descJa: "普通列車が先に通過し、10秒後に通過完了。さらに10秒後、特急列車が反対方向から通過開始します。",
+          descZh: "普通列车先通过，10秒通过完成；再过10秒，特急列车从反方向开始通过。",
+          descEn: "Local passes first and finishes at 10 s. Ten seconds later, express starts passing from the opposite side.",
+          tabProblem: "Problem",
+          tabSolution: "Solution",
+          tabAnimation: "Animation",
+          probPhoto: "Problem Photo",
+          probText: "Problem Text",
+          solTitle: "Solution (Kid-friendly)",
+          crossTitle: "Cross-check (Independent)",
+          play: "Play",
+          pause: "Pause",
+          reset: "Reset",
+          jump10: "Jump 10s",
+          jump20: "Jump 20s",
+          jump28: "Jump 28s",
+          animTitle: "Timeline: 0s -> 28s",
+          hint: "Blue first, red later; green line is Akiko's position.",
+          normalTitle: "Local Train",
+          normalInfo: "Passing: 0s to 10s",
+          expressTitle: "Express Train",
+          expressInfo: "Passing: 20s to 28s",
+          gapTitle: "Minimum Gap",
+          gapInfo: "400m at t=0; 288m at t=28",
+          answer: "Answer: (1) 8 s  (2) 400 m  (3) 288 m",
+          teacherOff: "Teacher Mode OFF",
+          teacherOn: "Teacher Mode ON",
+          nextStep: "Next Step",
+          allShown: "All Shown",
+          autoOff: "Auto Rotate OFF",
+          autoOn: "Auto Rotate ON"
+        }
+      };
+
+      const els = {
+        title: document.getElementById("titleText"),
+        descJa: document.getElementById("descJa"),
+        descZh: document.getElementById("descZh"),
+        descEn: document.getElementById("descEn"),
+        tabProblemBtn: document.getElementById("tabProblemBtn"),
+        tabSolutionBtn: document.getElementById("tabSolutionBtn"),
+        tabAnimationBtn: document.getElementById("tabAnimationBtn"),
+        tabProblem: document.getElementById("tabProblem"),
+        tabSolution: document.getElementById("tabSolution"),
+        tabAnimation: document.getElementById("tabAnimation"),
+        probPhotoTitle: document.getElementById("probPhotoTitle"),
+        probTextTitle: document.getElementById("probTextTitle"),
+        solTitle: document.getElementById("solTitle"),
+        crossTitle: document.getElementById("crossTitle"),
+        teacherModeBtn: document.getElementById("teacherModeBtn"),
+        nextStepBtn: document.getElementById("nextStepBtn"),
+        autoLangBtn: document.getElementById("autoLangBtn"),
+        langJaBtn: document.getElementById("langJaBtn"),
+        langZhBtn: document.getElementById("langZhBtn"),
+        langEnBtn: document.getElementById("langEnBtn"),
+        normalRect: document.getElementById("normalRect"),
+        expressRect: document.getElementById("expressRect"),
+        normalLabel: document.getElementById("normalLabel"),
+        expressLabel: document.getElementById("expressLabel"),
+        animTitle: document.getElementById("animTitle"),
+        timeReadout: document.getElementById("timeReadout"),
+        hintLine: document.getElementById("hintLine"),
+        playBtn: document.getElementById("playBtn"),
+        pauseBtn: document.getElementById("pauseBtn"),
+        resetBtn: document.getElementById("resetBtn"),
+        jump10Btn: document.getElementById("jump10Btn"),
+        jump20Btn: document.getElementById("jump20Btn"),
+        jump28Btn: document.getElementById("jump28Btn"),
+        slider: document.getElementById("timeSlider"),
+        clock: document.getElementById("clock"),
+        normalTitle: document.getElementById("normalTitle"),
+        normalInfo: document.getElementById("normalInfo"),
+        expressTitle: document.getElementById("expressTitle"),
+        expressInfo: document.getElementById("expressInfo"),
+        gapTitle: document.getElementById("gapTitle"),
+        gapBadge: document.getElementById("gapBadge"),
+        gapInfo: document.getElementById("gapInfo"),
+        answerLine: document.getElementById("answerLine")
+      };
+
+      const stepAnswers = Array.from(document.querySelectorAll(".step-answer"));
+      let teacherMode = false;
+      let revealedSteps = stepAnswers.length;
+      let currentLang = "ja";
+      let currentTab = "animation";
+      let autoTimer = null;
+      let playTimer = null;
+      let t = 0;
+      let rendered = false;
+
+      function mToX(m) {
+        return X_AKIKO + m * SCALE;
+      }
+
+      function setTrainRect(rect, label, leftM, lenM, y, text) {
+        const x = mToX(leftM);
+        const w = lenM * SCALE;
+        rect.setAttribute("x", String(x));
+        rect.setAttribute("y", String(y));
+        rect.setAttribute("width", String(w));
+        label.setAttribute("x", String(x + w / 2));
+        label.setAttribute("y", String(y + 22));
+        label.textContent = text;
+      }
+
+      function intervalGap(a1, a2, b1, b2) {
+        const leftA = Math.min(a1, a2);
+        const rightA = Math.max(a1, a2);
+        const leftB = Math.min(b1, b2);
+        const rightB = Math.max(b1, b2);
+        if (rightA < leftB) return leftB - rightA;
+        if (rightB < leftA) return leftA - rightB;
+        return 0;
+      }
+
+      function renderAnim() {
+        const normalFront = VN * t;
+        const normalRear = normalFront - LEN;
+        const expressFront = 400 - VE * t;
+        const expressRear = expressFront + LEN;
+
+        setTrainRect(els.normalRect, els.normalLabel, normalRear, LEN, 120, "普通 160m");
+        setTrainRect(els.expressRect, els.expressLabel, expressFront, LEN, 162, "特急 160m");
+
+        const gap = intervalGap(normalRear, normalFront, expressFront, expressRear);
+        els.gapBadge.textContent = `gap ${gap.toFixed(0)} m`;
+        els.timeReadout.textContent = `t = ${t.toFixed(1)}s`;
+        els.clock.textContent = `${t.toFixed(1)}s / 28.0s`;
+      }
+
+      function setT(next) {
+        t = Math.max(0, Math.min(T_MAX, next));
+        els.slider.value = String(Math.round(t * 10));
+        renderAnim();
+      }
+
+      function play() {
+        if (playTimer) return;
+        playTimer = setInterval(() => {
+          if (t >= T_MAX - 1e-6) {
+            pause();
+            return;
+          }
+          setT(t + 0.1);
+        }, 70);
+      }
+
+      function pause() {
+        if (!playTimer) return;
+        clearInterval(playTimer);
+        playTimer = null;
+      }
+
+      function updateTeacherUI() {
+        const tx = i18n[currentLang];
+        els.teacherModeBtn.textContent = teacherMode ? tx.teacherOn : tx.teacherOff;
+        els.teacherModeBtn.classList.toggle("on", teacherMode);
+        els.nextStepBtn.classList.toggle("hidden", !teacherMode);
+        if (!teacherMode) {
+          stepAnswers.forEach((n) => n.classList.remove("hidden"));
+          return;
+        }
+        stepAnswers.forEach((n, idx) => n.classList.toggle("hidden", idx >= revealedSteps));
+        els.nextStepBtn.textContent = revealedSteps >= stepAnswers.length ? tx.allShown : tx.nextStep;
+      }
+
+      function setTab(tab) {
+        currentTab = tab;
+        els.tabProblemBtn.classList.toggle("active", tab === "problem");
+        els.tabSolutionBtn.classList.toggle("active", tab === "solution");
+        els.tabAnimationBtn.classList.toggle("active", tab === "animation");
+        els.tabProblem.classList.toggle("hidden", tab !== "problem");
+        els.tabSolution.classList.toggle("hidden", tab !== "solution");
+        els.tabAnimation.classList.toggle("hidden", tab !== "animation");
+        if (tab === "solution" && !rendered && window.renderMathInElement) {
+          renderMathInElement(els.tabSolution, {
+            delimiters: [
+              { left: "$$", right: "$$", display: true },
+              { left: "\\(", right: "\\)", display: false },
+              { left: "$", right: "$", display: false }
+            ],
+            ignoredTags: ["script", "noscript", "style", "textarea", "pre", "code"]
+          });
+          rendered = true;
+        }
+      }
+
+      function setLang(lang) {
+        currentLang = lang;
+        const tx = i18n[lang];
+        els.title.textContent = tx.title;
+        els.descJa.textContent = tx.descJa;
+        els.descZh.textContent = tx.descZh;
+        els.descEn.textContent = tx.descEn;
+        els.tabProblemBtn.textContent = tx.tabProblem;
+        els.tabSolutionBtn.textContent = tx.tabSolution;
+        els.tabAnimationBtn.textContent = tx.tabAnimation;
+        els.probPhotoTitle.textContent = tx.probPhoto;
+        els.probTextTitle.textContent = tx.probText;
+        els.solTitle.textContent = tx.solTitle;
+        els.crossTitle.textContent = tx.crossTitle;
+        els.playBtn.textContent = tx.play;
+        els.pauseBtn.textContent = tx.pause;
+        els.resetBtn.textContent = tx.reset;
+        els.jump10Btn.textContent = tx.jump10;
+        els.jump20Btn.textContent = tx.jump20;
+        els.jump28Btn.textContent = tx.jump28;
+        els.animTitle.textContent = tx.animTitle;
+        els.hintLine.textContent = tx.hint;
+        els.normalTitle.textContent = tx.normalTitle;
+        els.normalInfo.textContent = tx.normalInfo;
+        els.expressTitle.textContent = tx.expressTitle;
+        els.expressInfo.textContent = tx.expressInfo;
+        els.gapTitle.textContent = tx.gapTitle;
+        els.gapInfo.textContent = tx.gapInfo;
+        els.answerLine.textContent = tx.answer;
+        els.autoLangBtn.textContent = autoTimer ? tx.autoOn : tx.autoOff;
+
+        const english = lang === "en";
+        els.descJa.classList.toggle("hidden", english);
+        els.descZh.classList.toggle("hidden", english);
+        els.descEn.classList.toggle("hidden", !english);
+        document.querySelectorAll(".txt-ja").forEach((n) => n.classList.toggle("hidden", english));
+        document.querySelectorAll(".txt-zh").forEach((n) => n.classList.toggle("hidden", english));
+        document.querySelectorAll(".txt-en").forEach((n) => n.classList.toggle("hidden", !english));
+
+        els.langJaBtn.classList.toggle("active", lang === "ja");
+        els.langZhBtn.classList.toggle("active", lang === "zh");
+        els.langEnBtn.classList.toggle("active", lang === "en");
+        els.autoLangBtn.classList.toggle("auto-on", Boolean(autoTimer));
+        updateTeacherUI();
+      }
+
+      function toggleAutoLang() {
+        if (autoTimer) {
+          clearInterval(autoTimer);
+          autoTimer = null;
+          setLang(currentLang);
+          return;
+        }
+        const order = ["ja", "zh", "en"];
+        autoTimer = setInterval(() => {
+          const idx = order.indexOf(currentLang);
+          setLang(order[(idx + 1) % order.length]);
+        }, 10000);
+        setLang(currentLang);
+      }
+
+      els.playBtn.addEventListener("click", play);
+      els.pauseBtn.addEventListener("click", pause);
+      els.resetBtn.addEventListener("click", () => { pause(); setT(0); });
+      els.jump10Btn.addEventListener("click", () => { pause(); setT(10); });
+      els.jump20Btn.addEventListener("click", () => { pause(); setT(20); });
+      els.jump28Btn.addEventListener("click", () => { pause(); setT(28); });
+      els.slider.addEventListener("input", () => {
+        pause();
+        setT(Number(els.slider.value) / 10);
+      });
+
+      els.langJaBtn.addEventListener("click", () => setLang("ja"));
+      els.langZhBtn.addEventListener("click", () => setLang("zh"));
+      els.langEnBtn.addEventListener("click", () => setLang("en"));
+      els.autoLangBtn.addEventListener("click", toggleAutoLang);
+
+      els.tabProblemBtn.addEventListener("click", () => setTab("problem"));
+      els.tabSolutionBtn.addEventListener("click", () => setTab("solution"));
+      els.tabAnimationBtn.addEventListener("click", () => setTab("animation"));
+
+      els.teacherModeBtn.addEventListener("click", () => {
+        teacherMode = !teacherMode;
+        revealedSteps = teacherMode ? 0 : stepAnswers.length;
+        updateTeacherUI();
+      });
+      els.nextStepBtn.addEventListener("click", () => {
+        if (!teacherMode) return;
+        if (revealedSteps < stepAnswers.length) revealedSteps += 1;
+        updateTeacherUI();
+      });
+
+      setLang("ja");
+      setTab("animation");
+      setT(0);
+    })();
+  </script>
+</body>
+</html>
