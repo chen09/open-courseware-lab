@@ -140,6 +140,7 @@ vite.config.ts.timestamp-*
 
 # Cloudflare Wrangler local state
 .wrangler/
+.pages-deploy/
 
 # Python virtual environments
 .venv/
@@ -151,6 +152,10 @@ venv/
 **/assets/explain/frame-*.png
 **/assets/explain/qc-frames/
 **/assets/explain/qc-report.md
+**/assets/explain/*.narration*.txt
+**/assets/explain/*.narration*.wav
+**/assets/explain/*tts*.mp4
+**/assets/explain/candy-ref-*.wav
 
 # Keep project rules in version control
 !.cursor/

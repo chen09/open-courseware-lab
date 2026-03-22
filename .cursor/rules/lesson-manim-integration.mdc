@@ -8,6 +8,8 @@ alwaysApply: false
 
 - Keep interactive lesson structure intact: `Problem / Solution / Animation` remains the primary learning shell.
 - Use Manim assets only when they explain a bottleneck step better than SVG/JS animation.
+- Enforce LaTeX-first formulas in lesson pages:
+  - formulas shown in `Problem/Solution/Animation` panels should be rendered via KaTeX/MathJax (not plain text only).
 - Store explain assets under `assets/explain/` and use scene-based naming:
   - `scene-01.mp4`
   - `scene-01.poster.webp`

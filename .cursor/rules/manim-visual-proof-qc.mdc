@@ -9,6 +9,9 @@ alwaysApply: false
 - Treat child-facing correctness and clarity as release blockers.
 - Keep one concept -> one mapping style per segment:
   - `(a+b)^2`, `4·ab/2`, `c^2` should each use consistent motion language (ghost transform preferred over mixed arrows).
+- Enforce equation typesetting quality:
+  - webpage formulas must be rendered by KaTeX/MathJax,
+  - video equations must be MathTex-style typeset; plain text equations are not acceptable for release.
 - Enforce story order explicitly in code comments and animation sequence:
   - source highlight -> movement/aggregation -> formula landing.
 - Never allow overlap with unsafe zones:
@@ -19,6 +22,10 @@ alwaysApply: false
   - wording matches current motion type,
   - cue boundaries align with visible beats,
   - last cue ends at or after measured video duration.
+- If TTS voiceover is produced from VTT:
+  - treat speech density as a QA gate (no rushed or over-compressed narration),
+  - prefer concise narration text over aggressive time-compression,
+  - verify no lexical leakage from reference transcript (e.g. unrelated words from speaker sample).
 - Self-review is mandatory before handoff:
   - extract and inspect key frames for early/mid/late timeline,
   - verify no accidental artifacts (stray lines, protruding markers, duplicate labels).

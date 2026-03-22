@@ -1,0 +1,9 @@
+# Workflow Governance Cycle
+
+- Keep `docs/KICKOFF_AGENT_PROMPT.md` as orchestration entry and avoid process duplication across prompt files.
+- Execute lesson delivery in stages using `.cursor/skills/lesson-stage-*`.
+- Before release, run `node ./scripts/qa-workflow-audit.mjs` and keep `reports/workflow-audit/latest.json` as evidence.
+- Any `BLOCKED` audit state is a release blocker.
+- For each lesson, record a retro entry with `docs/lesson-retro-template.md`.
+- Every 10-15 lessons, run cycle review with `docs/workflow-cycle-review-template.md`.
+- Convert recurring errors into concrete updates to rules/skills/scripts.

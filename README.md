@@ -25,15 +25,12 @@ Current subject taxonomy:
 - `physics` (planned)
 - `chemistry` (planned)
 
-## Current lesson
+## Current lessons
 
-- `lessons/math/elementary/speed-distance/jiro-taro-catchup-rest/`
-  - `index.html` (lesson entry)
-  - `assets/problem-001.png` (problem image)
-  - `meta.json` (classification metadata)
-  - Problem / Solution / Animation tabs
-  - Teacher mode (step-by-step reveal)
-  - Language switch + auto language rotation
+- Lessons are cataloged in `lessons/manifest.json`.
+- Root homepage renders cards from the manifest.
+- Example lesson path:
+  - `lessons/math/elementary/speed-distance/jiro-taro-catchup-rest/`
 
 ## Why this project
 
@@ -57,4 +54,26 @@ When adding or updating lessons, regenerate the manifest before deployment:
 
 ```bash
 node ./scripts/generate-lessons-manifest.mjs
+```
+
+## Modular workflow
+
+- Orchestration prompt:
+  - `docs/KICKOFF_AGENT_PROMPT.md`
+- Stage skills:
+  - `.cursor/skills/lesson-stage-01-intake/SKILL.md`
+  - `.cursor/skills/lesson-stage-02-solve-model/SKILL.md`
+  - `.cursor/skills/lesson-stage-03-build-lesson/SKILL.md`
+  - `.cursor/skills/lesson-stage-04-validate/SKILL.md`
+  - `.cursor/skills/lesson-stage-05-release/SKILL.md`
+  - `.cursor/skills/lesson-stage-06-retro-governance/SKILL.md`
+- Architecture and templates:
+  - `docs/workflow-modular-architecture.md`
+  - `docs/lesson-retro-template.md`
+  - `docs/workflow-cycle-review-template.md`
+
+Run workflow audit before release:
+
+```bash
+node ./scripts/qa-workflow-audit.mjs
 ```

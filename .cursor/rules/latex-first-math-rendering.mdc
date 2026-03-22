@@ -1,0 +1,18 @@
+---
+description: Enforce LaTeX-first math notation across all lessons
+alwaysApply: true
+---
+
+# LaTeX-First Math Rendering
+
+- All math/physics/chemistry lessons must render formulas with a LaTeX-capable engine (KaTeX or MathJax).
+- Do not ship plain-text formulas as final learner-facing math content in `Problem`, `Solution`, or `Animation` explanation panels.
+- For static diagrams and proof maps:
+  - keep geometry in SVG/Canvas if needed,
+  - but place formulas in LaTeX-rendered blocks next to/around the figure.
+- For video/animation explainers:
+  - on-screen equations must use math typesetting (e.g. Manim `MathTex`),
+  - if current video uses non-typeset/plain formulas, re-render before release.
+- Subtitle/caption text may be natural language, but formula mentions must be notation-consistent with the rendered equations.
+- Release blocker:
+  - if equations are not LaTeX-rendered, lesson is not publish-ready.

@@ -1,8 +1,32 @@
 # KICKOFF Agent Prompt (Open Courseware Lab)
 
-用法（每次新会话）：
-1. 先把下面代码块完整复制给 Agent。  
-2. 再发送本次任务（目标、文件路径、验收标准）。
+用法（每次新会话，推荐一步）：
+1. 一条消息内同时发送：
+   - 下方 kickoff 代码块（完整）；
+   - 本次题目输入（必填：题目图片或题目 text）；
+   - 可选解答输入（可选：解答图片或解答 text）。
+2. 如平台限制附件/长文本，也可退化为两步发送（先 kickoff，再任务输入）。
+
+一步消息模板（可直接复制）：
+
+```markdown
+<KICKOFF_BLOCK>
+（把下方完整 kickoff 代码块粘贴在这里）
+</KICKOFF_BLOCK>
+
+<INPUT>
+problem:
+- type: image | text
+- content: <题目图片或题目文本>
+
+solution: (optional)
+- type: image | text
+- content: <解答图片或解答文本，可空>
+</INPUT>
+
+任务目标：
+- 从输入自动完成：求解 -> 校验 -> 页面/动画(必要时3Blue1Brown风格视频) -> 本地审查 -> GitHub + Cloudflare 发布
+```
 
 ```markdown
 You are working in `open-courseware-lab`.
@@ -11,6 +35,38 @@ You are working in `open-courseware-lab`.
 - Correctness first for children-facing content.
 - Execute end-to-end unless blocked: implement -> validate -> report.
 - Be proactive in running checks; do not push command burden to user.
+
+## Modular Execution (single source of truth)
+- Treat this file as the orchestration entry, and execute by stages:
+  1) `lesson-stage-01-intake`
+  2) `lesson-stage-02-solve-model`
+  3) `lesson-stage-03-build-lesson`
+  4) `lesson-stage-04-validate`
+  5) `lesson-stage-05-release`
+  6) `lesson-stage-06-retro-governance`
+- Do not redefine the same rules in multiple prompt files; update stage skills/rules instead.
+- After stage 04, run workflow contract audit:
+  - `node ./scripts/qa-workflow-audit.mjs`
+- Keep audit output as release evidence:
+  - `reports/workflow-audit/latest.json`
+- Every 10-15 lessons, run cycle review with:
+  - `docs/workflow-cycle-review-template.md`
+
+## End-to-End Auto Pipeline (default)
+- Treat the following as the default fully automated flow unless user explicitly pauses:
+  1) Ingest input (problem image / problem+solution image / plain text).
+  2) Solve and cross-check; if useful, search web for similar problem patterns/solutions as reference (do not copy blindly).
+  3) Build solution page (kid-friendly wording + LaTeX rendering).
+  4) Build interactive animation that matches the solved model.
+  5) If necessary (especially geometry/visual intuition bottlenecks), produce a 3Blue1Brown-style explainer video with narration.
+  6) Run local release preview.
+  7) Use browser-devtools tools to review local output; do frame-by-frame checks for animation/video and use LLM-assisted evidence-based review.
+  8) If all checks PASS, publish to GitHub and Cloudflare Pages, then verify production URL.
+
+## Web Reference Policy (for step 2/5)
+- Prefer finding 2-3 high-quality external references when problem type is non-trivial.
+- Use references for validation and explanation quality, not for unverified copy/paste.
+- If references disagree, mark as conflict and block release until resolved.
 
 ## Hard Rules
 - Python must run only in project `./.venv` (no host pollution, no extra envs).
@@ -26,6 +82,16 @@ You are working in `open-courseware-lab`.
 - Do not overwrite original problem images; create processed copies only.
 - For geometry animations, coordinates must satisfy problem constraints numerically (e.g., collinearity/on-segment/ratio).
 - Never declare "PASS" from visual impression alone; use measurable checks (DOM/computed style/numeric assertions).
+
+## 3Blue1Brown-style Video Gate (only when needed)
+- Trigger this mode when:
+  - core learning objective depends on continuous geometric/algebraic transformation, or
+  - static/web animation cannot provide sufficient intuition clarity.
+- Requirements in this mode:
+  - derive scene math first, then storyboard, then render;
+  - narration must align with exact math states shown on screen;
+  - frame-level sanity checks are mandatory at key timestamps;
+  - if quality/confidence is insufficient, block release and fall back to clearer web-first explanation.
 
 ## Validation Gate
 - Run:
@@ -44,6 +110,14 @@ You are working in `open-courseware-lab`.
   - check for lexical leakage from reference text (unexpected words unrelated to lesson content).
 - If any verification signals conflict, stop release and fix first; do not "ship and see".
 - Report key outputs and blockers clearly.
+
+## Browser Review Gate (must run before release)
+- Open local preview in browser-devtools tooling and review:
+  - solution tab correctness (numbers, units, final answer),
+  - animation behavior across start/mid/end and scenario switches,
+  - video keyframes for 3Blue1Brown-style output (if present).
+- Capture screenshots for key checkpoints and keep them as review evidence.
+- For frame-heavy review, use incremental seeks and LLM-assisted inspection; no release without evidence-backed PASS.
 
 ## Local Preview Gate (must pass before asking user to open)
 - After generation/edit, automatically start local preview from repo root.
@@ -76,6 +150,14 @@ You are working in `open-courseware-lab`.
 - Reply in Chinese.
 - Keep output concise and actionable.
 - If unclear requirements, ask targeted clarification before risky changes.
+- Do not ask optional preference questions like "whether to add unit hints / teacher script"; decide and execute by default.
+- Default teaching enhancements for math word problems:
+  - include a teacher-only unit-conversion hint block when units may confuse learners,
+  - include a classroom-ready short voiceover script draft in teacher mode notes (even if no TTS render is requested yet).
+- Run autonomous review before release and report evidence:
+  - numeric assertions (unit/value checks),
+  - browser checkpoint review (start/mid/end),
+  - consistency check across problem/solution/animation/manifest.
 ```
 
 ## Task Template (paste after kickoff)
@@ -107,6 +189,8 @@ You are working in `open-courseware-lab`.
 - [ ] 课程文件一致性通过（`index.html` / `meta.json` / `lessons/manifest.json` / assets）
 - [ ] 公式渲染正确（KaTeX/MathJax/MathTex，无纯文本公式残留）
 - [ ] 动画语义正确（方向、时序、标注、关键帧与解法一致）
+- [ ] 已按需完成 web 参考核验（至少 2 个参考来源；冲突已消解）
+- [ ] 如启用 3Blue1Brown 风格视频：关键帧逐帧审查通过（画面/旁白/数学状态一致）
 - [ ] 本地预览已自动启动（端口冲突已自动回退）
 - [ ] 本地 URL 自检通过（文件存在 + HTTP 200）
 - [ ] 审核截图/证据已留存（关键帧、关键计算步骤）

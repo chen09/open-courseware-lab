@@ -1,0 +1,17 @@
+---
+description: Mandatory Python virtual environment isolation
+alwaysApply: true
+---
+
+# Python venv Mandatory (Highest Priority)
+
+- All Python execution (scripts, tools, tests, installs, TTS/ML pipelines) must run inside a project virtual environment.
+- For this repository, the default and preferred environment is `./.venv`.
+- Never install Python packages to host/system Python for project tasks.
+- Never rely on globally installed Python libraries as a hidden dependency.
+- Never use `conda` for project Python steps unless the user explicitly requests a conda-only path.
+- Never create extra project-local Python envs (e.g. `.venv-*`) when `./.venv` already exists and is usable.
+- If a required package is missing, install it into the active venv only.
+- If no venv is active, create/activate one first, then run Python commands.
+- Release blocker:
+  - if any project Python step was run outside venv, the run is non-compliant and must be redone in venv.

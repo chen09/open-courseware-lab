@@ -5,6 +5,7 @@ alwaysApply: true
 
 # Open Courseware Lab: One Strict Rule
 
+- Highest-priority environment rule: all Python commands must run inside project venv (no host Python pollution).
 - Correctness is the top priority for children-facing content; speed is secondary.
 - Default execution mode is strict and fully automated end-to-end: extract problem -> solve -> cross-validate -> implement lesson -> update taxonomy/manifest/index -> branch/PR/merge -> deploy.
 - Always use multiple independent validations before release:
@@ -18,3 +19,6 @@ alwaysApply: true
   - update `meta.json` and regenerate `lessons/manifest.json`
   - ensure root catalog reflects new lesson entries
   - release via PR flow to `main` and deploy Cloudflare Pages production.
+- For Cloudflare Pages deploys from local workspace:
+  - avoid shipping local caches/model blobs (`.cache`, venv artifacts, large temporary media),
+  - if needed, deploy from a clean staging directory that mirrors only publishable site assets.

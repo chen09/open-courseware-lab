@@ -2,6 +2,12 @@
 
 Use this prompt in a new Cursor Agent chat when you want full end-to-end lesson production.
 
+> Note: `docs/KICKOFF_AGENT_PROMPT.md` is the active orchestration source.
+> Keep this file as a reusable wrapper template, and put detailed process updates into:
+> - `docs/KICKOFF_AGENT_PROMPT.md`
+> - `.cursor/skills/lesson-stage-*/SKILL.md`
+> - `docs/workflow-modular-architecture.md`
+
 ```markdown
 If asked in English: Execute an end-to-end production workflow for one interactive multilingual lesson, including problem extraction, multi-method solving, web research, multi-model cross-verification, implementation, QA, git PR flow, and production deployment.
 
