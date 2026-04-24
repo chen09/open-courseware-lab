@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-03-22T09:45:11.178Z",
-  "count": 8,
+  "generatedAt": "2026-04-24T12:58:37.591Z",
+  "count": 9,
   "lessons": [
     {
       "id": "math-el-geometry-area-ratio-parallelogram-diagonal-ratio",
@@ -79,6 +79,31 @@
         "assets/explain/scene-01.mp4",
         "assets/explain/scene-01.poster.webp",
         "assets/explain/scene-01.vtt"
+      ]
+    },
+    {
+      "id": "math-el-geometry-volume-cylinder-ab-water-transfer",
+      "title": {
+        "ja": "円柱の水の移し替え（深さの変化）",
+        "zh": "圆柱容器倒水问题（水深变化）",
+        "en": "Cylinder Water Transfer (Depth Change)"
+      },
+      "subject": "math",
+      "gradeBand": "elementary",
+      "topic": "geometry-volume",
+      "slug": "cylinder-ab-water-transfer",
+      "features": [
+        "tabs:problem-solution-animation",
+        "teacher-mode",
+        "multilingual:ja-zh-en",
+        "auto-language-rotation",
+        "timeline-animation",
+        "cross-validation-matrix"
+      ],
+      "path": "./lessons/math/elementary/geometry-volume/cylinder-ab-water-transfer/",
+      "entry": "index.html",
+      "assets": [
+        "assets/problem-photo.png"
       ]
     },
     {
