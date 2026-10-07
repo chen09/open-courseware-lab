@@ -1,0 +1,15 @@
+{
+  "id": "math-el-speed-distance-ring-track-third-catchup",
+  "title": {
+    "ja": "池のまわりで3回目の追いつき",
+    "zh": "环形跑道：第三次追上",
+    "en": "Circular Track: The Third Catch-up"
+  },
+  "subject": "math",
+  "gradeBand": "elementary",
+  "topic": "speed-distance",
+  "slug": "ring-track-third-catchup",
+  "entry": "index.html",
+  "assets": ["assets/problem-source.jpg", "assets/model.mjs", "assets/katex/katex.min.css", "assets/katex/katex.min.js", "assets/katex/auto-render.min.js", "assets/katex/LICENSE"],
+  "features": ["tabs:problem-solution-animation", "teacher-mode", "multilingual:ja-zh-en", "timeline-animation", "cross-validation-matrix"]
+}
